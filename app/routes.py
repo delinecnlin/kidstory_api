@@ -20,7 +20,7 @@ def create_default_user():
 
 @app.route('/api/recommendations', methods=['GET'])
 def get_recommendations():
-    recommendations = get_recommendations()
+    recommendations = fetch_recommendations()
     return jsonify(recommendations), 200
 
 @app.route('/api/stories', methods=['POST'])
