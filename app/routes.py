@@ -4,7 +4,7 @@ from app.models import User, Story
 from app.story_service import generate_story
 from app.hello import hello
 
-@app.before_first_request
+@app.before_request
 def create_default_user():
     if not User.query.filter_by(username='default_user').first():
         default_user = User(username='default_user', email='default@example.com')
