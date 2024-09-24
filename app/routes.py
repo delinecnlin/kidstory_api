@@ -32,10 +32,15 @@ def create_story():
         return jsonify({'error': 'User not found'}), 404
 
     story = generate_story(data['preferences'])
-    new_story = Story(title=story.get('title', 'Untitled'), body=story.get('body', ''), author=user)
+    new_story = Story(title="Generated Story", body="", author=user)
     db.session.add(new_story)
     db.session.commit()
-    return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body}), 201
+
+    new_chapter = Chapter(title="Chapter 1", body=story, story=new_story)
+    db.session.add(new_chapter)
+    db.session.commit()
+
+    return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body}]}), 201
 
 @app.route('/api/stories', methods=['GET'])
 def get_stories():
