@@ -36,7 +36,7 @@ def create_story():
     db.session.add(new_story)
     db.session.commit()
 
-    new_chapter = Chapter(title="Chapter 1", body=story, story=new_story)
+    new_chapter = Chapter(title="Chapter 1", body=story['body'], story=new_story)
     db.session.add(new_chapter)
     db.session.commit()
 
