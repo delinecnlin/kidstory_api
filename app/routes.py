@@ -4,7 +4,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 from app import app, db
 from app.models import User, Story, Chapter
-from app.story_service import generate_story, get_recommendations
+from app.story_service import generate_story, fetch_recommendations
 from app.hello import hello
 
 @app.route('/')
