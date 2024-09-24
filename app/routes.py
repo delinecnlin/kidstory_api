@@ -10,9 +10,6 @@ def create_default_user():
         default_user = User(username='default_user', email='default@example.com')
         db.session.add(default_user)
         db.session.commit()
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.route('/api/stories', methods=['POST'])
 def create_story():
