@@ -24,13 +24,67 @@ def create_story():
     db.session.commit()
     return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body}), 201
 
-@app.route('/api/recommendations', methods=['GET'])
-def recommend_stories():
-    user = User.query.filter_by(username='default_user').first()
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
+@app.route('/api/stories', methods=['GET'])
+def get_stories():
+    stories = Story.query.all()
+    return jsonify([{'id': story.id, 'title': story.title, 'body': story.body} for story in stories]), 200
 
-    # 假设我们有一个简单的推荐算法
-    recommended_stories = Story.query.filter_by(user_id=user.id).limit(5).all()
-    recommendations = [{'id': story.id, 'title': story.title, 'body': story.body} for story in recommended_stories]
-    return jsonify(recommendations), 200
+@app.route('/api/stories/<int:id>', methods=['GET'])
+def get_story(id):
+    story = Story.query.get_or_404(id)
+    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
+
+@app.route('/api/stories/<int:id>', methods=['DELETE'])
+def delete_story(id):
+    story = Story.query.get_or_404(id)
+    db.session.delete(story)
+    db.session.commit()
+    return '', 204
+
+@app.route('/api/stories/<int:id>/continue', methods=['POST'])
+def continue_story(id):
+    data = request.get_json()
+    story = Story.query.get_or_404(id)
+    new_content = continue_story(id, data['preferences'])
+    story.body += new_content['body']
+    db.session.commit()
+    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
+
+@app.route('/api/stories/<int:id>/rewrite', methods=['POST'])
+def rewrite_story(id):
+    data = request.get_json()
+    story = Story.query.get_or_404(id)
+    new_content = rewrite_story(id, data['preferences'])
+    story.body = new_content['body']
+    db.session.commit()
+    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
+
+@app.route('/api/stories/<int:id>/chapters', methods=['POST'])
+def add_chapter(id):
+    data = request.get_json()
+    story = Story.query.get_or_404(id)
+    new_chapter = Chapter(title=data['title'], body=data['body'], story=story)
+    db.session.add(new_chapter)
+    db.session.commit()
+    return jsonify({'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body}), 201
+
+@app.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])
+def get_chapter(id, chapter_id):
+    chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
+    return jsonify({'id': chapter.id, 'title': chapter.title, 'body': chapter.body}), 200
+
+@app.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['DELETE'])
+def delete_chapter(id, chapter_id):
+    chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
+    db.session.delete(chapter)
+    db.session.commit()
+    return '', 204
+
+@app.route('/api/stories/<int:id>/chapters/<int:chapter_id>/rewrite', methods=['POST'])
+def rewrite_chapter(id, chapter_id):
+    data = request.get_json()
+    chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
+    new_content = rewrite_chapter(id, chapter_id, data['preferences'])
+    chapter.body = new_content['body']
+    db.session.commit()
+    return jsonify({'id': chapter.id, 'title': chapter.title, 'body': chapter.body}), 200
