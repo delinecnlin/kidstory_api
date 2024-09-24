@@ -9,7 +9,7 @@ from app.hello import hello
 
 @app.route('/')
 def index():
-    return "Welcome to the Story API!"
+    return render_template('index.html')
 
 @app.before_request
 def create_default_user():
