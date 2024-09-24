@@ -2,6 +2,7 @@ from flask import request, jsonify
 from app import app, db
 from app.models import User, Story
 from app.story_service import generate_story
+from app.hello import hello
 
 @app.route('/api/stories', methods=['POST'])
 def create_story():
