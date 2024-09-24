@@ -1,4 +1,7 @@
 from flask import request, jsonify, render_template
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 from app import app, db
 from app.models import User, Story, Chapter
 from app.story_service import generate_story
@@ -13,6 +16,7 @@ def create_default_user():
 
 @app.route('/api/stories', methods=['POST'])
 def create_story():
+    logging.debug(f"Request path: {request.path}")
     data = request.get_json()
     user = User.query.filter_by(username='default_user').first()
     if not user:
