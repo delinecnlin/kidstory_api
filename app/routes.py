@@ -4,6 +4,10 @@ from app.models import User, Story
 from app.story_service import generate_story
 from app.hello import hello
 
+@app.route('/')
+def index():
+    return "Welcome to the Storytelling App!"
+
 @app.route('/api/stories', methods=['POST'])
 def create_story():
     data = request.get_json()
