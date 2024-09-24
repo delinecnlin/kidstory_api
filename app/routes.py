@@ -22,7 +22,7 @@ def create_story():
         return jsonify({'error': 'User not found'}), 404
 
     story = generate_story(data['preferences'])
-    new_story = Story(title=story['title'], body=story['body'], author=user)
+    new_story = Story(title=story.get('title', 'Untitled'), body=story.get('body', ''), author=user)
     db.session.add(new_story)
     db.session.commit()
     return jsonify({'story': new_story.id}), 201
