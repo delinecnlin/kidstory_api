@@ -26,3 +26,14 @@ def create_story():
     db.session.add(new_story)
     db.session.commit()
     return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body}), 201
+
+@app.route('/api/recommendations', methods=['GET'])
+def recommend_stories():
+    user = User.query.filter_by(username='default_user').first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    # 假设我们有一个简单的推荐算法
+    recommended_stories = Story.query.filter_by(user_id=user.id).limit(5).all()
+    recommendations = [{'id': story.id, 'title': story.title, 'body': story.body} for story in recommended_stories]
+    return jsonify(recommendations), 200
