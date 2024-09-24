@@ -42,7 +42,7 @@
 
             const data = await response.json();
             if (response.ok) {
-                document.getElementById('generatedStory').innerText = `Story ID: ${data.story}`;
+                document.getElementById('generatedStory').innerText = `Story ID: ${data.story}\nTitle: ${data.title}\nBody: ${data.body}`;
             } else {
                 document.getElementById('generatedStory').innerText = `Error: ${data.error}`;
             }
