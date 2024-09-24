@@ -7,6 +7,10 @@ from app.models import User, Story, Chapter
 from app.story_service import generate_story
 from app.hello import hello
 
+@app.route('/')
+def index():
+    return "Welcome to the Story API!"
+
 @app.before_request
 def create_default_user():
     if not User.query.filter_by(username='default_user').first():
