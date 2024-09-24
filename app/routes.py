@@ -25,4 +25,4 @@ def create_story():
     new_story = Story(title=story.get('title', 'Untitled'), body=story.get('body', ''), author=user)
     db.session.add(new_story)
     db.session.commit()
-    return jsonify({'story': new_story.id}), 201
+    return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body}), 201
