@@ -4,14 +4,19 @@ from app.models import User, Story
 from app.story_service import generate_story
 from app.hello import hello
 
-@app.route('/')
+@app.before_first_request
+def create_default_user():
+    if not User.query.filter_by(username='default_user').first():
+        default_user = User(username='default_user', email='default@example.com')
+        db.session.add(default_user)
+        db.session.commit()
 def index():
     return render_template('index.html')
 
 @app.route('/api/stories', methods=['POST'])
 def create_story():
     data = request.get_json()
-    user = User.query.get(data['user_id'])
+    user = User.query.filter_by(username='default_user').first()
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
