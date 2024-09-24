@@ -1,6 +1,6 @@
 from flask import request, jsonify, render_template
 from app import app, db
-from app.models import User, Story
+from app.models import User, Story, Chapter
 from app.story_service import generate_story
 from app.hello import hello
 
