@@ -4,7 +4,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 from app import app, db
 from app.models import User, Story, Chapter
-from app.story_service import generate_story
+from app.story_service import generate_story, get_recommendations
 from app.hello import hello
 
 @app.route('/')
@@ -17,6 +17,11 @@ def create_default_user():
         default_user = User(username='default_user', email='default@example.com')
         db.session.add(default_user)
         db.session.commit()
+
+@app.route('/api/recommendations', methods=['GET'])
+def get_recommendations():
+    recommendations = get_recommendations()
+    return jsonify(recommendations), 200
 
 @app.route('/api/stories', methods=['POST'])
 def create_story():
