@@ -81,14 +81,6 @@ def rewrite_story(id):
     db.session.commit()
     return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
 
-@app.route('/api/stories/<int:id>/chapters', methods=['POST'])
-def add_chapter(id):
-    data = request.get_json()
-    story = Story.query.get_or_404(id)
-    new_chapter = Chapter(title=data['title'], body=data['body'], story=story)
-    db.session.add(new_chapter)
-    db.session.commit()
-    return jsonify({'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body}), 201
 
 @app.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])
 def get_chapter(id, chapter_id):
