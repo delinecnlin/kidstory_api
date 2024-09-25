@@ -23,8 +23,8 @@ def get_recommendations():
     recommendations = fetch_recommendations()
     return jsonify(recommendations), 200
 
-@app.route('/api/stories/<int:id>/chapters', methods=['POST'])
-def add_chapter(id):
+@app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
+def add_chapter(story_id):
     logging.debug(f"Request path: {request.path}")
     data = request.get_json()
     story = Story.query.get_or_404(id)
