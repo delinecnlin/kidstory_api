@@ -54,7 +54,7 @@
 
         async function fetchRecommendations() {
             console.log("Fetching recommendations...");
-            const response = await fetch('/api/recommendations');
+            const response = await fetch('/recommendations');
             const data = await response.json();
             if (response.ok) {
                 const recommendationsDiv = document.getElementById('recommendedStories');
