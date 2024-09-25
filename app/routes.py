@@ -4,7 +4,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 from app import app, db
 from app.models import User, Story, Chapter
-from app.story_service import generate_story, fetch_recommendations
+from app.story_service import generate_story
 from app.hello import hello
 
 @app.route('/')
@@ -20,9 +20,8 @@ def create_default_user():
 
 @app.route('/api/recommendations', methods=['GET'])
 def get_recommendations():
-    recommendations = fetch_recommendations()
-    if 'error' in recommendations:
-        return jsonify(recommendations), 500
+    recommendations = User.query.filter(User.username != 'default_user').limit(4).all()
+    recommendations_list = [{'id': user.id, 'username': user.username, 'email': user.email} for user in recommendations]
     return jsonify(recommendations), 200
 
 @app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
