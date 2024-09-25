@@ -29,7 +29,7 @@ def fix_stories():
         story.is_open = True
     db.session.commit()
     return render_template('fix_stories.html')
-@app.route('/api/recommendations', methods=['GET'])
+@app.route('/recommendations', methods=['GET'])
 def get_recommendations():
     open_stories = Story.query.filter_by(is_open=True).limit(4).all()
     return render_template('recommendations.html', stories=open_stories)
