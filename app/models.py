@@ -18,4 +18,5 @@ class Story(db.Model):
     title = db.Column(db.String(140))
     body = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    is_open = db.Column(db.Boolean, default=False)
     chapters = db.relationship('Chapter', backref='story', lazy='dynamic')
