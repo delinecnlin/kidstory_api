@@ -27,9 +27,8 @@ def get_recommendations():
 def add_chapter(story_id):
     logging.debug(f"Request path: {request.path}")
     data = request.get_json()
-    story = Story.query.get_or_404(id)
+    story = Story.query.get_or_404(story_id)
     
-    data = request.get_json()
     preferences = data.get('preferences', {})
     new_content = generate_story(preferences)
 
