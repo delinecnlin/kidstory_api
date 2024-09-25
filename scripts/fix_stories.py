@@ -5,7 +5,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import db, app
 from app.models import Story
 
-app = create_app()
 app.app_context().push()
 
 def fix_stories():
