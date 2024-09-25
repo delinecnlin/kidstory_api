@@ -29,10 +29,10 @@ def fix_stories():
         story.is_open = True
     db.session.commit()
     return render_template('fix_stories.html')
+@app.route('/api/recommendations', methods=['GET'])
 def get_recommendations():
-    recommendations = User.query.filter(User.username != 'default_user').limit(4).all()
-    recommendations_list = [{'id': user.id, 'username': user.username, 'email': user.email} for user in recommendations]
-    return jsonify(recommendations), 200
+    open_stories = Story.query.filter_by(is_open=True).limit(4).all()
+    return render_template('recommendations.html', stories=open_stories)
 
 @app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):

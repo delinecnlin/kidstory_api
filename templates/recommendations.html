@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendations</title>
+</head>
+<body>
+    <h1>Open Stories</h1>
+    <ul>
+        {% for story in stories %}
+            <li>{{ story.title }} - {{ story.body }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
