@@ -28,7 +28,7 @@ def fix_stories():
         story.user_id = 2  # 假设用户ID 2是其他用户
         story.is_open = True
     db.session.commit()
-    return jsonify({'message': 'Stories updated successfully'}), 200
+    return render_template('fix_stories.html')
 def get_recommendations():
     recommendations = User.query.filter(User.username != 'default_user').limit(4).all()
     recommendations_list = [{'id': user.id, 'username': user.username, 'email': user.email} for user in recommendations]
