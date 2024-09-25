@@ -36,7 +36,10 @@ def create_story():
     db.session.add(new_story)
     db.session.commit()
 
-    new_chapter = Chapter(title="Chapter 1", body=story['body'], story=new_story)
+    if 'body' in story:
+        new_chapter = Chapter(title="Chapter 1", body=story['body'], story=new_story)
+    else:
+        return jsonify({'error': 'Story generation failed'}), 500
     db.session.add(new_chapter)
     db.session.commit()
 
@@ -45,7 +48,7 @@ def create_story():
 @app.route('/api/stories', methods=['GET'])
 def get_stories():
     stories = Story.query.all()
-    return jsonify([{'id': story.id, 'title': story.title, 'body': story.body} for story in stories]), 200
+    return jsonify([{'id': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': chapter.id, 'title': chapter.title, 'body': chapter.body} for chapter in story.chapters]} for story in stories]), 200
 
 @app.route('/api/stories/<int:id>', methods=['GET'])
 def get_story(id):
