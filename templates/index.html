@@ -19,6 +19,7 @@
     <h2>Generated Story:</h2>
     <div id="generatedStory"></div>
 
+    <button id="fetchRecommendationsButton">Fetch Recommendations</button>
     <h2>Recommended Stories:</h2>
     <div id="recommendedStories"></div>
 
@@ -67,8 +68,8 @@
             }
         }
 
-        // Fetch recommendations on page load
-        window.onload = fetchRecommendations;
+        // Fetch recommendations on button click
+        document.getElementById('fetchRecommendationsButton').addEventListener('click', fetchRecommendations);
     </script>
 
     <script>
