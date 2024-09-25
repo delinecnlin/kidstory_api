@@ -21,6 +21,8 @@ def create_default_user():
 @app.route('/api/recommendations', methods=['GET'])
 def get_recommendations():
     recommendations = fetch_recommendations()
+    if 'error' in recommendations:
+        return jsonify(recommendations), 500
     return jsonify(recommendations), 200
 
 @app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
