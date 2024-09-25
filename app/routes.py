@@ -5,6 +5,7 @@ logging.basicConfig(level=logging.DEBUG)
 from app import app, db
 from app.models import User, Story, Chapter
 from app.story_service import generate_story
+from app.models import Story
 from app.hello import hello
 
 @app.route('/')
@@ -18,7 +19,16 @@ def create_default_user():
         db.session.add(default_user)
         db.session.commit()
 
-@app.route('/api/recommendations', methods=['GET'])
+@app.route('/api/fix_stories', methods=['POST'])
+def fix_stories():
+    # 获取前4个故事
+    stories = Story.query.limit(4).all()
+    for story in stories:
+        # 将故事分配给其他用户并设置为开放状态
+        story.user_id = 2  # 假设用户ID 2是其他用户
+        story.is_open = True
+    db.session.commit()
+    return jsonify({'message': 'Stories updated successfully'}), 200
 def get_recommendations():
     recommendations = User.query.filter(User.username != 'default_user').limit(4).all()
     recommendations_list = [{'id': user.id, 'username': user.username, 'email': user.email} for user in recommendations]
