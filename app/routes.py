@@ -31,7 +31,13 @@ def create_story():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    story = generate_story(data['preferences'])
+    # 手动设置 preferences 的值进行测试
+    preferences = {
+        "characters": "小红帽，大灰狼",
+        "by_characters": "",
+        "history": "第一章小红帽出生了，大灰狼在做菜，第二章小红帽去世了"
+    }
+    story = generate_story(preferences)
     new_story = Story(title="Generated Story", body="", author=user)
     db.session.add(new_story)
     db.session.commit()
