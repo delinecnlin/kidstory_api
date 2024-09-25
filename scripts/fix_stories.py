@@ -2,8 +2,11 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app import db
+from app import db, create_app
 from app.models import Story
+
+app = create_app()
+app.app_context().push()
 
 def fix_stories():
     # 获取前4个故事
