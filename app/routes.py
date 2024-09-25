@@ -29,12 +29,8 @@ def add_chapter(id):
     data = request.get_json()
     story = Story.query.get_or_404(id)
     
-    # 手动设置 preferences 的值进行测试
-    preferences = {
-        "characters": "小红帽，大灰狼",
-        "by_characters": "",
-        "history": "第一章小红帽出生了，大灰狼在做菜，第二章小红帽去世了"
-    }
+    data = request.get_json()
+    preferences = data.get('preferences', {})
     new_content = generate_story(preferences)
 
     if 'body' in new_content:
