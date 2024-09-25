@@ -18,7 +18,7 @@
         <input type="text" id="by_characters" name="by_characters"><br><br>
         <label for="history">History:</label>
         <textarea id="history" name="history"></textarea><br><br>
-        <button type="button" onclick="createStory()">Add Chapter</button>
+        <button type="button" onclick="addChapter()">Add Chapter</button>
     </form>
     <h2>Generated Story:</h2>
     <div id="generatedStory"></div>
@@ -39,35 +39,6 @@
                 storySelect.appendChild(option);
             });
         });
-
-        async function addChapter() {
-            const storyId = document.getElementById('storySelect').value;
-            const characters = document.getElementById('characters').value;
-            const by_characters = document.getElementById('by_characters').value;
-            const history = document.getElementById('history').value;
-
-            const response = await fetch(`/api/stories/${storyId}/chapters`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user_id: 1,  // 假设用户ID为1
-                    preferences: {
-                        characters: characters,
-                        by_characters: by_characters,
-                        history: history
-                    }
-                })
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                document.getElementById('generatedStory').innerText = `Story ID: ${data.story}\nTitle: ${data.title}\nBody: ${data.body}`;
-            } else {
-                document.getElementById('generatedStory').innerText = `Error: ${data.error}`;
-            }
-        }
 
         async function fetchRecommendations() {
             console.log("Fetching recommendations...");
@@ -91,7 +62,7 @@
     </script>
 
     <script>
-        async function createStory() {
+        async function addChapter() {
             console.log("Creating story...");
             const characters = document.getElementById('characters').value;
             const by_characters = document.getElementById('by_characters').value;
