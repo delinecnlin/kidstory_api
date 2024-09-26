@@ -137,7 +137,6 @@ def login():
             return 'Invalid credentials', 401
     return render_template('login.html')
 
-app.register_blueprint(routes_bp)
 
 
 @app.before_request
@@ -243,29 +242,3 @@ def rewrite_chapter(id, chapter_id):
     chapter.body = new_content['body']
     db.session.commit()
     return jsonify({'id': chapter.id, 'title': chapter.title, 'body': chapter.body}), 200
-from flask import request, jsonify, render_template, redirect, url_for, session
-from app import db
-from app.__init__ import user_datastore
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user_datastore.create_user(email=email, password=password)
-        db.session.commit()
-        return redirect(url_for('index'))
-    return render_template('register.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = user_datastore.find_user(email=email)
-        if user and user.password == password:
-            session['user'] = {'email': user.email}
-            return redirect(url_for('index'))
-        else:
-            return 'Invalid credentials', 401
-    return render_template('login.html')
