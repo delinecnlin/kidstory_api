@@ -3,7 +3,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 from flask import current_app as app
-from app import db
+from .models import db
 from app.models import User, Story, Chapter
 from app.story_service import generate_story
 from app.models import Story
