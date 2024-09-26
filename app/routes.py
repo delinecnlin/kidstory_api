@@ -1,19 +1,19 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session
-from app import db
-from app.__init__ import user_datastore
-import logging
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, current_app
 
-logging.basicConfig(level=logging.DEBUG)
+import logging
 from app.models import User, Story, Chapter
 from app.story_service import generate_story
-from app.hello import hello
+
+logging.basicConfig(level=logging.DEBUG)
 
 routes_bp = Blueprint('routes', __name__)
+from app import db
 
 @routes_bp.before_app_request
 def create_default_user():
     if not User.query.filter_by(username='default_user').first():
         default_user = User(username='default_user', email='default@example.com', password='default_password')
+        db = current_app.extensions['sqlalchemy'].db
         db.session.add(default_user)
         db.session.commit()
 
@@ -35,6 +35,7 @@ def get_recommendations():
 
 @routes_bp.route('/')
 def index():
+    print("Index route accessed")
     return render_template('index.html')
 
 @routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
@@ -119,8 +120,9 @@ def register():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        user_datastore = current_app.extensions['security'].datastore  # 在请求处理函数内使用 current_app
         user_datastore.create_user(email=email, password=password)
-        db.session.commit()
+        db.session.commit()  # 这里不需要使用 current_app.db.session，直接使用 db 即可
         return redirect(url_for('routes.index'))
     return render_template('register.html')
 
@@ -129,6 +131,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        user_datastore = current_app.extensions['security'].datastore  # 这里同样使用 current_app
         user = user_datastore.find_user(email=email)
         if user and user.password == password:
             session['user'] = {'email': user.email}
