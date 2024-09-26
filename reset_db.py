@@ -8,7 +8,7 @@ app = create_app()
 # 在应用程序上下文中关闭数据库连接并删除现有的数据库文件
 with app.app_context():
     db.session.remove()
-    db.get_engine(app).dispose()
+    db.engine.dispose()
     if os.path.exists('instance/app.db'):
         os.remove('instance/app.db')
 
