@@ -19,8 +19,14 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
-class Plan(db.Model):
+class Story(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
-    price = db.Column(db.Integer)
-    stripe_plan_id = db.Column(db.String(255))
+    title = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    chapters = db.relationship('Chapter', backref='story', lazy=True)
+
+class Chapter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    story_id = db.Column(db.Integer, db.ForeignKey('story.id'), nullable=False)
