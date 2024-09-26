@@ -46,6 +46,9 @@ def add_chapter(story_id):
     story = Story.query.get_or_404(story_id)
     
     preferences = data.get('preferences', {})
+    # 获取前面章节的历史作为context
+    context = " ".join([chapter.body for chapter in story.chapters])
+    preferences['context'] = context
     new_content = generate_story(preferences)
 
     if 'body' in new_content:

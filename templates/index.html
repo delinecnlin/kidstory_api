@@ -85,6 +85,11 @@
             const history = document.getElementById('history').value;
 
             const storyId = document.getElementById('storySelect').value;
+            // 获取前面章节的历史作为context
+            const storySelect = document.getElementById('storySelect');
+            const selectedStory = storySelect.options[storySelect.selectedIndex].text;
+            const context = selectedStory.split(' - ')[1];
+
             const response = await fetch(`/api/stories/${storyId}/chapters`, {
                 method: 'POST',
                 headers: {
