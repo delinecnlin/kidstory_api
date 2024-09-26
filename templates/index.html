@@ -49,7 +49,11 @@
                 recommendationsDiv.innerHTML = '';
                 data.forEach(story => {
                     const storyDiv = document.createElement('div');
-                    storyDiv.innerText = `Story ID: ${story.id}\nTitle: ${story.title}\nBody: ${story.body}`;
+                    storyDiv.innerHTML = `<strong>Story ID:</strong> ${story.id}<br><strong>Title:</strong> ${story.title}<br><strong>Body:</strong> ${story.body}<br><strong>Chapters:</strong><ul>`;
+                    story.chapters.forEach(chapter => {
+                        storyDiv.innerHTML += `<li><strong>Chapter ID:</strong> ${chapter.id}<br><strong>Title:</strong> ${chapter.title}<br><strong>Body:</strong> ${chapter.body}</li>`;
+                    });
+                    storyDiv.innerHTML += `</ul>`;
                     recommendationsDiv.appendChild(storyDiv);
                 });
                 // Update the story select dropdown with the new chapter

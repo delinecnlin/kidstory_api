@@ -37,7 +37,7 @@ def get_recommendations():
 @app.route('/api/stories', methods=['GET'])
 def get_all_stories():
     stories = Story.query.all()
-    return jsonify([{'id': story.id, 'title': story.title, 'chapters': [{'id': chapter.id, 'title': chapter.title} for chapter in story.chapters]} for story in stories]), 200
+    return jsonify([{'id': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': chapter.id, 'title': chapter.title, 'body': chapter.body} for chapter in story.chapters]} for story in stories]), 200
 
 @app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
