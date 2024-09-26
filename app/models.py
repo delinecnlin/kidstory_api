@@ -1,5 +1,7 @@
 import uuid
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 from flask_security import UserMixin, RoleMixin
 
 class Plan(db.Model):
