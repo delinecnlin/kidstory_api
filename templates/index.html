@@ -12,10 +12,10 @@
         <select id="storySelect" name="storySelect">
             <!-- Options will be populated by JavaScript -->
         </select><br><br>
-        <label for="characters">Characters:</label>
-        <input type="text" id="characters" name="characters"><br><br>
-        <label for="by_characters">By Characters:</label>
-        <input type="text" id="by_characters" name="by_characters"><br><br>
+        <label for="main_characters">Main Characters:</label>
+        <input type="text" id="main_characters" name="main_characters"><br><br>
+        <label for="supporting_characters">Supporting Characters:</label>
+        <input type="text" id="supporting_characters" name="supporting_characters"><br><br>
         <label for="user_added_content">User Added Content:</label>
         <textarea id="user_added_content" name="user_added_content"></textarea><br><br>
         <button type="button" onclick="addChapter()">Add Chapter</button>
@@ -80,8 +80,8 @@
     <script>
         async function addChapter() {
             console.log("Creating story...");
-            const characters = document.getElementById('characters').value;
-            const by_characters = document.getElementById('by_characters').value;
+            const main_characters = document.getElementById('main_characters').value;
+            const supporting_characters = document.getElementById('supporting_characters').value;
             const user_added_content = document.getElementById('user_added_content').value;
 
             const storyId = document.getElementById('storySelect').value;
@@ -98,8 +98,8 @@
                 body: JSON.stringify({
                     user_id: 1,  // 假设用户ID为1
                     preferences: {
-                        characters: characters,
-                        by_characters: by_characters,
+                        main_characters: main_characters,
+                        supporting_characters: supporting_characters,
                         user_added_content: user_added_content,
                         context: context,
                         context: context
