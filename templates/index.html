@@ -28,6 +28,12 @@
     <div id="recommendedStories"></div>
 
     <script>
+        async function viewStories() {
+            const response = await fetch('/api/stories');
+            const stories = await response.json();
+            const storiesDiv = document.getElementById('viewStories');
+            storiesDiv.innerHTML = JSON.stringify(stories, null, 2);
+        }
         document.addEventListener('DOMContentLoaded', async function() {
             const response = await fetch('/api/stories');
             const stories = await response.json();
@@ -68,6 +74,8 @@
         // Fetch recommendations on button click
         document.getElementById('fetchRecommendationsButton').addEventListener('click', fetchRecommendations);
     </script>
+    <button onclick="viewStories()">View Stories</button>
+    <pre id="viewStories"></pre>
 
     <script>
         async function addChapter() {
