@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Config
+from flask_security import SQLAlchemyUserDatastore, Security
+from app.models import User, Role
 
 db = SQLAlchemy()
 migrate = Migrate()
