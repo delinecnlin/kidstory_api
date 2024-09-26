@@ -10,9 +10,32 @@ routes_bp = Blueprint('routes', __name__)
 from app.db import db
 from app.story_service import continue_story_service, rewrite_story_service
 
+# Register route added here
+@routes_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        # 使用 current_app 获取 user_datastore
+        user_datastore = current_app.extensions['security'].datastore
+        user_datastore.create_user(email=email, password=password)
+        db.session.commit()  # 保存到数据库
+        return redirect(url_for('routes.index'))  # 使用正确的蓝图命名空间
+    return render_template('register.html')
 
-
-
+@routes_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user_datastore = current_app.extensions['security'].datastore
+        user = user_datastore.find_user(email=email)
+        if user and user.password == password:
+            session['user'] = {'email': user.email}
+            return redirect(url_for('routes.index'))
+        else:
+            return 'Invalid credentials', 401
+    return render_template('login.html')
 
 @routes_bp.route('/fix_stories', methods=['POST'])
 def fix_stories():
