@@ -1,17 +1,15 @@
-from flask import request, jsonify, render_template
+from flask import request, jsonify, render_template, redirect, url_for, session
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
 from flask import current_app as app
-from .models import db
+from app import db
+from app.__init__ import user_datastore
 from app.models import User, Story, Chapter
 from app.story_service import generate_story
 from app.models import Story
 from app.hello import hello
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.before_request
 def create_default_user():
