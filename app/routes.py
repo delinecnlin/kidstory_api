@@ -76,23 +76,6 @@ def delete_story(id):
     db.session.commit()
     return '', 204
 
-@routes_bp.route('/api/stories/<int:id>/continue', methods=['POST'])
-def continue_story(id):
-    data = request.get_json()
-    story = Story.query.get_or_404(id)
-    new_content = continue_story(id, data['preferences'])
-    story.body += new_content['body']
-    db.session.commit()
-    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
-
-@routes_bp.route('/api/stories/<int:id>/rewrite', methods=['POST'])
-def rewrite_story(id):
-    data = request.get_json()
-    story = Story.query.get_or_404(id)
-    new_content = rewrite_story(id, data['preferences'])
-    story.body = new_content['body']
-    db.session.commit()
-    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
 
 @routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])
 def get_chapter(id, chapter_id):
