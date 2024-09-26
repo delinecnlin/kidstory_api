@@ -1,5 +1,5 @@
 import os
-from app import create_app, db
+from app.app_instance import create_app, db
 from app.models import *
 
 # 创建应用程序实例
