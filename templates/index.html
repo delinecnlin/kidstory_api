@@ -35,7 +35,7 @@
             stories.forEach(story => {
                 const option = document.createElement('option');
                 option.value = story.id;
-                option.text = story.title;
+                option.text = `ID: ${story.id} - ${story.title}`;
                 storySelect.appendChild(option);
             });
         });
@@ -52,6 +52,10 @@
                     storyDiv.innerText = `Story ID: ${story.id}\nTitle: ${story.title}\nBody: ${story.body}`;
                     recommendationsDiv.appendChild(storyDiv);
                 });
+                // Update the story select dropdown with the new chapter
+                const storySelect = document.getElementById('storySelect');
+                const selectedOption = storySelect.options[storySelect.selectedIndex];
+                selectedOption.text = `ID: ${data.story} - ${data.title} (New Chapter Added)`;
             } else {
                 document.getElementById('recommendedStories').innerText = `Error: ${data.error}`;
             }
