@@ -20,7 +20,7 @@ def register():
         user_datastore = current_app.extensions['security'].datastore
         user_datastore.create_user(email=email, password=password)
         db.session.commit()  # 保存到数据库
-        return redirect(url_for('routes.index'))  # 使用正确的蓝图命名空间
+        return redirect(url_for('routes.register'))  # 使用正确的蓝图命名空间
     return render_template('register.html')
 
 @routes_bp.route('/login', methods=['GET', 'POST'])
