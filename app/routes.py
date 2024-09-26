@@ -20,7 +20,7 @@ def create_default_user():
         db.session.add(default_user)
         db.session.commit()
 
-@app.route('/api/fix_stories', methods=['POST'])
+@app.route('/fix_stories', methods=['POST'])
 def fix_stories():
     # 获取前4个故事
     stories = Story.query.limit(4).all()
