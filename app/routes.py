@@ -7,7 +7,6 @@ from app.story_service import generate_story
 logging.basicConfig(level=logging.DEBUG)
 
 routes_bp = Blueprint('routes', __name__)
-from app.app_instance import app
 from app.db import db
 from app.story_service import continue_story_service, rewrite_story_service
 
@@ -15,7 +14,7 @@ from app.story_service import continue_story_service, rewrite_story_service
 
 
 
-@app.route('/fix_stories', methods=['POST'])
+@routes_bp.route('/fix_stories', methods=['POST'])
 def fix_stories():
     # 获取前4个故事
     stories = Story.query.limit(4).all()
@@ -25,16 +24,16 @@ def fix_stories():
         story.is_open = True
     db.session.commit()
     return render_template('fix_stories.html')
-@app.route('/recommendations', methods=['GET'])
+@routes_bp.route('/recommendations', methods=['GET'])
 def get_recommendations():
     open_stories = Story.query.filter_by(is_open=True).limit(4).all()
     return render_template('recommendations.html', stories=open_stories)
 
-@app.route('/')
+@routes_bp.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
+@routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
     logging.debug(f"Request path: {request.path}")
     data = request.get_json()
@@ -55,24 +54,24 @@ def add_chapter(story_id):
 
     return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
-@app.route('/api/stories', methods=['GET'])
+@routes_bp.route('/api/stories', methods=['GET'])
 def get_stories():
     stories = Story.query.all()
     return jsonify([{'id': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': chapter.id, 'title': chapter.title, 'body': chapter.body} for chapter in story.chapters]} for story in stories]), 200
 
-@app.route('/api/stories/<int:id>', methods=['GET'])
+@routes_bp.route('/api/stories/<int:id>', methods=['GET'])
 def get_story(id):
     story = Story.query.get_or_404(id)
     return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
 
-@app.route('/api/stories/<int:id>', methods=['DELETE'])
+@routes_bp.route('/api/stories/<int:id>', methods=['DELETE'])
 def delete_story(id):
     story = Story.query.get_or_404(id)
     db.session.delete(story)
     db.session.commit()
     return '', 204
 
-@app.route('/api/stories/<int:id>/continue', methods=['POST'])
+@routes_bp.route('/api/stories/<int:id>/continue', methods=['POST'])
 def continue_story_route(id):
     data = request.get_json()
     story = Story.query.get_or_404(id)
@@ -81,7 +80,7 @@ def continue_story_route(id):
     db.session.commit()
     return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
 
-@app.route('/api/stories/<int:id>/rewrite', methods=['POST'])
+@routes_bp.route('/api/stories/<int:id>/rewrite', methods=['POST'])
 def rewrite_story_route(id):
     data = request.get_json()
     story = Story.query.get_or_404(id)
@@ -91,19 +90,19 @@ def rewrite_story_route(id):
     return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
 
 
-@app.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])
+@routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])
 def get_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     return jsonify({'id': chapter.id, 'title': chapter.title, 'body': chapter.body}), 200
 
-@app.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['DELETE'])
+@routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['DELETE'])
 def delete_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     db.session.delete(chapter)
     db.session.commit()
     return '', 204
 
-@app.route('/api/stories/<int:id>/chapters/<int:chapter_id>/rewrite', methods=['POST'])
+@routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>/rewrite', methods=['POST'])
 def rewrite_chapter(id, chapter_id):
     data = request.get_json()
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
