@@ -35,10 +35,9 @@ def get_recommendations():
     open_stories = Story.query.filter_by(is_open=True).limit(4).all()
     return render_template('recommendations.html', stories=open_stories)
 
-@app.route('/api/stories', methods=['GET'])
-def get_all_stories():
-    stories = Story.query.all()
-    return jsonify([{'id': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': chapter.id, 'title': chapter.title, 'body': chapter.body} for chapter in story.chapters]} for story in stories]), 200
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
