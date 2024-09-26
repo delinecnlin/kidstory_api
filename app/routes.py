@@ -12,12 +12,6 @@ from app import db
 
 
 
-@app.before_request
-def create_default_user():
-    if not User.query.filter_by(username='default_user').first():
-        default_user = User(username='default_user', email='default@example.com', password='default_password')
-        db.session.add(default_user)
-        db.session.commit()
 
 @app.route('/fix_stories', methods=['POST'])
 def fix_stories():
@@ -77,19 +71,19 @@ def delete_story(id):
     return '', 204
 
 @app.route('/api/stories/<int:id>/continue', methods=['POST'])
-def continue_story(id):
+def continue_story_route(id):
     data = request.get_json()
     story = Story.query.get_or_404(id)
-    new_content = continue_story(id, data['preferences'])
+    new_content = continue_story_service(id, data['preferences'])
     story.body += new_content['body']
     db.session.commit()
     return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
 
 @app.route('/api/stories/<int:id>/rewrite', methods=['POST'])
-def rewrite_story(id):
+def rewrite_story_route(id):
     data = request.get_json()
     story = Story.query.get_or_404(id)
-    new_content = rewrite_story(id, data['preferences'])
+    new_content = rewrite_story_service(id, data['preferences'])
     story.body = new_content['body']
     db.session.commit()
     return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
