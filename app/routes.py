@@ -16,7 +16,7 @@ def index():
 @app.before_request
 def create_default_user():
     if not User.query.filter_by(username='default_user').first():
-        default_user = User(username='default_user', email='default@example.com')
+        default_user = User(username='default_user', email='default@example.com', password='default_password')
         db.session.add(default_user)
         db.session.commit()
 
