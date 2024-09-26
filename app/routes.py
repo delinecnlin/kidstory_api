@@ -7,7 +7,7 @@ from app.story_service import generate_story
 logging.basicConfig(level=logging.DEBUG)
 
 routes_bp = Blueprint('routes', __name__)
-from app.app_instance import db
+from app.db import db
 from app.story_service import continue_story_service, rewrite_story_service
 
 # Register route added here
