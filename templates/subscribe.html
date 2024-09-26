@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe</title>
+</head>
+<body>
+    <h1>Subscribe to a Plan</h1>
+    <form action="/subscribe" method="post" id="subscribeForm">
+        <label for="plan_id">Select Plan:</label>
+        <select id="plan_id" name="plan_id">
+            <!-- Options will be populated by JavaScript -->
+        </select><br><br>
+        <label for="stripeToken">Stripe Token:</label>
+        <input type="text" id="stripeToken" name="stripeToken"><br><br>
+        <button type="submit">Subscribe</button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const response = await fetch('/api/plans');
+            const plans = await response.json();
+            const planSelect = document.getElementById('plan_id');
+            plans.forEach(plan => {
+                const option = document.createElement('option');
+                option.value = plan.id;
+                option.text = `${plan.name} - $${plan.price}`;
+                planSelect.appendChild(option);
+            });
+        });
+    </script>
+</body>
+</html>
