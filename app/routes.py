@@ -40,11 +40,16 @@ def auth():
 
         elif action == 'login':
             user = user_datastore.find_user(email=email)
-            if user and user.password == password:
-                session['user'] = {'email': user.email}
-                return redirect(url_for('routes.index'))
+            if user:
+                if user.password == password:
+                    session['user'] = {'email': user.email}
+                    return redirect(url_for('routes.index'))
+                else:
+                    current_app.logger.error(f"Password mismatch for user {email}")
+                    return render_template('auth.html', error='Invalid password')
             else:
-                return render_template('auth.html', error='Invalid credentials')
+                current_app.logger.error(f"User not found: {email}")
+                return render_template('auth.html', error='User not found')
 
     return render_template('auth.html')
 
