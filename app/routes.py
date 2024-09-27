@@ -44,7 +44,7 @@ def auth_callback():
         db.session.commit()
 
     # 登录用户
-    session['user'] = {'email': user.email, 'name': user.username}
+    session['user'] = {'email': user.email, 'username': user.username, 'type': 'google'}
 
     return redirect(url_for('routes.index'))
 
