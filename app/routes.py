@@ -13,6 +13,10 @@ from app.story_service import continue_story_service, rewrite_story_service
 
 # Register route added here
 @routes_bp.route('/auth', methods=['GET', 'POST'])
+@routes_bp.route('/auth/google')
+def auth_google():
+    redirect_uri = url_for('auth_callback', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
 def auth():
     if request.method == 'POST':
         action = request.form['action']
