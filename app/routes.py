@@ -53,6 +53,32 @@ def auth():
 
     return render_template('auth.html')
 
+@routes_bp.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    if request.method == 'POST':
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+        user_datastore = current_app.extensions['security'].datastore
+        user = user_datastore.find_user(email=session['user']['email'])
+
+        if not user or not user.password == current_password:
+            return render_template('auth.html', error='Current password is incorrect')
+
+        if new_password != confirm_password:
+            return render_template('auth.html', error='New passwords do not match')
+
+        try:
+            user.password = hash_password(new_password)
+            db.session.commit()
+            return redirect(url_for('routes.index'))
+        except Exception as e:
+            db.session.rollback()
+            return render_template('auth.html', error=str(e))
+
+    return render_template('auth.html')
+
 @routes_bp.route('/fix_stories', methods=['POST'])
 def fix_stories():
     # 获取前4个故事
