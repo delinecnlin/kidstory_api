@@ -15,11 +15,16 @@ from app.story_service import continue_story_service, rewrite_story_service
 @routes_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        import random
+        import string
+
         email = request.form['email']
         password = request.form['password']
+        username = request.form.get('username', ''.join(random.choices(string.ascii_letters + string.digits, k=8)))
+
         # 使用 current_app 获取 user_datastore
         user_datastore = current_app.extensions['security'].datastore
-        user_datastore.create_user(email=email, password=hash_password(password))
+        user_datastore.create_user(username=username, email=email, password=hash_password(password))
         db.session.commit()  # 保存到数据库
         return redirect(url_for('routes.register'))  # 使用正确的蓝图命名空间
     return render_template('register.html')
