@@ -170,12 +170,15 @@ def create_story():
 
     # 使用 Azure OpenAI 生成标题和故事概况
     openai.api_key = 'your_openai_api_key'
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt="Generate a story title and summary based on the following preferences: " + str(preferences),
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "Generate a story title and summary based on the following preferences: " + str(preferences)}
+        ],
         max_tokens=150
     )
-    story_content = response.choices[0].text.strip().split('\n', 1)
+    story_content = response.choices[0].message['content'].strip().split('\n', 1)
     title = story_content[0]
     body = story_content[1] if len(story_content) > 1 else ""
 
