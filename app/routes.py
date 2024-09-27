@@ -163,33 +163,53 @@ def add_chapter(story_id):
 
     return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
-@routes_bp.route('/api/stories/new', methods=['POST'])
-def create_story():
+@routes_bp.route('/api/stories/new_or_add_chapter', methods=['POST'])
+def create_or_add_chapter():
     data = request.get_json()
     preferences = data.get('preferences', {})
+    story_id = data.get('story_id')
 
-    # 使用 Azure OpenAI 生成标题和故事概况
     openai.api_key = 'your_openai_api_key'
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Generate a story title and summary based on the following preferences: " + str(preferences)}
-        ],
-        max_tokens=150
-    )
-    story_content = response.choices[0].message['content'].strip().split('\n', 1)
-    title = story_content[0]
-    body = story_content[1] if len(story_content) > 1 else ""
 
-    # 使用 Azure DALL-E 3 API 生成封面图片
-    image_url = generate_image(prompt=title, api_key='your_dalle_api_key', endpoint='your_dalle_endpoint')
+    if story_id:
+        # 续写故事
+        story = Story.query.get_or_404(story_id)
+        context = " ".join([chapter.body for chapter in story.chapters])
+        preferences['context'] = context
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "你是一个乐于助人的助手。"},
+                {"role": "user", "content": "根据以下偏好续写故事: " + str(preferences)}
+            ],
+            max_tokens=150
+        )
+        new_content = response.choices[0].message['content'].strip()
+        new_chapter = Chapter(title="New Chapter", body=new_content, story=story)
+        db.session.add(new_chapter)
+        db.session.commit()
+        return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
+    else:
+        # 创建新故事
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "你是一个乐于助人的助手。"},
+                {"role": "user", "content": "根据以下偏好生成故事标题和概述: " + str(preferences)}
+            ],
+            max_tokens=150
+        )
+        story_content = response.choices[0].message['content'].strip().split('\n', 1)
+        title = story_content[0]
+        body = story_content[1] if len(story_content) > 1 else ""
 
-    new_story = Story(title=title, body=body)
-    db.session.add(new_story)
-    db.session.commit()
+        image_url = generate_image(prompt=title, api_key='your_dalle_api_key', endpoint='your_dalle_endpoint')
 
-    return jsonify({'id': new_story.id, 'title': new_story.title, 'body': new_story.body, 'image_url': image_url}), 201
+        new_story = Story(title=title, body=body)
+        db.session.add(new_story)
+        db.session.commit()
+
+        return jsonify({'id': new_story.id, 'title': new_story.title, 'body': new_story.body, 'image_url': image_url}), 201
 
 @routes_bp.route('/api/stories/<int:id>', methods=['GET'])
 def get_story(id):
