@@ -12,11 +12,38 @@ from app.db import db
 from app import oauth
 from app.story_service import continue_story_service, rewrite_story_service
 
+# Google OAuth 回调处理
+@routes_bp.route('/auth/callback')
+def auth_callback():
+    token = oauth.google.authorize_access_token()
+    user_info = oauth.google.parse_id_token(token)
+    
+    # 根据从 Google 返回的用户信息处理登录或注册
+    if not user_info:
+        return jsonify({"error": "Failed to authenticate with Google"}), 400
+    
+    user_datastore = current_app.extensions['security'].datastore
+    user = user_datastore.find_user(email=user_info['email'])
+
+    # 如果用户不存在，注册新用户
+    if not user:
+        user = user_datastore.create_user(
+            email=user_info['email'],
+            username=user_info.get('name', user_info['email']),
+            password=None  # Google OAuth 登录通常不需要密码
+        )
+        db.session.commit()
+
+    # 登录用户
+    session['user'] = {'email': user.email, 'name': user.username}
+
+    return redirect(url_for('routes.index'))
+
 # Register route added here
 @routes_bp.route('/auth', methods=['GET', 'POST'])
 @routes_bp.route('/auth/google')
 def auth_google():
-    redirect_uri = url_for('auth_callback', _external=True)
+    redirect_uri = url_for('routes.auth_callback', _external=True)
     return oauth.google.authorize_redirect(redirect_uri)
 def auth():
     if request.method == 'POST':
