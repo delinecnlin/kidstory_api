@@ -185,7 +185,7 @@ def create_or_add_chapter():
         title = new_story_data.get('title', 'Untitled Story')
         body = new_story_data.get('body', '')
 
-        image_url = generate_image(prompt=title, api_key='your_dalle_api_key', endpoint='your_dalle_endpoint')
+        image_url = generate_image(prompt=title)
 
         new_story = Story(title=title, body=body)
         db.session.add(new_story)
