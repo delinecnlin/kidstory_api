@@ -169,8 +169,6 @@ def create_or_add_chapter():
     preferences = data.get('preferences', {})
     story_id = data.get('story_id')
 
-    openai.api_key = 'e913f52142e84540acf57048bbdb148d'
-
     if story_id:
         # 续写故事
         story = Story.query.get_or_404(story_id)
