@@ -16,7 +16,8 @@ from app.story_service import continue_story_service, rewrite_story_service
 @routes_bp.route('/auth/google')
 def auth_google():
     redirect_uri = url_for('routes.auth_callback', _external=True)
-    nonce = oauth.google.generate_nonce()
+    import secrets
+    nonce = secrets.token_urlsafe(16)
     session['nonce'] = nonce
     return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
 
