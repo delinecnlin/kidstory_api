@@ -116,6 +116,11 @@ def change_password():
 
     return render_template('auth.html')
 
+@routes_bp.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('routes.index'))
+
 @routes_bp.route('/fix_stories', methods=['POST'])
 def fix_stories():
     # 获取前4个故事
