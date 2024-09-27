@@ -21,7 +21,7 @@ def auth_google():
 @routes_bp.route('/auth/callback')
 def auth_callback():
     token = oauth.google.authorize_access_token()
-    user_info = oauth.google.parse_id_token(token)
+    user_info = oauth.google.parse_id_token(token, nonce=session['nonce'])
     
     # 根据从 Google 返回的用户信息处理登录或注册
     if not user_info:
