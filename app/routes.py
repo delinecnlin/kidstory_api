@@ -24,9 +24,20 @@ def register():
 
         # 使用 current_app 获取 user_datastore
         user_datastore = current_app.extensions['security'].datastore
-        user_datastore.create_user(username=username, email=email, password=hash_password(password))
-        db.session.commit()  # 保存到数据库
-        return redirect(url_for('routes.register'))  # 使用正确的蓝图命名空间
+
+        # 检查邮箱和用户名是否已经存在
+        if user_datastore.find_user(email=email):
+            return 'Email already registered', 400
+        if user_datastore.find_user(username=username):
+            return 'Username already taken', 400
+
+        try:
+            user_datastore.create_user(username=username, email=email, password=hash_password(password))
+            db.session.commit()  # 保存到数据库
+            return redirect(url_for('routes.index'))  # 注册成功后跳转到index.html
+        except Exception as e:
+            db.session.rollback()
+            return str(e), 500
     return render_template('register.html')
 
 @routes_bp.route('/login', methods=['GET', 'POST'])
