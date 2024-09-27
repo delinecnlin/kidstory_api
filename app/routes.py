@@ -79,7 +79,7 @@ def auth():
             user = user_datastore.find_user(email=email)
             if user:
                 if user.password == password:
-                    session['user'] = {'email': user.email}
+                    session['user'] = {'email': user.email, 'username': user.username, 'type': 'local'}
                     return redirect(url_for('routes.index'))
                 else:
                     current_app.logger.error(f"Password mismatch for user {email}")

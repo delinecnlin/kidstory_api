@@ -9,7 +9,7 @@
     <h1>Welcome to the Storytelling App!</h1>
     {% if session.get('user') %}
         <div style="position: absolute; top: 10px; right: 10px;">
-            <p>Logged in as: {{ session['user']['username'] }} ({{ session['user']['email'] }})</p>
+            <p>Logged in as: {{ session['user']['username'] }} ({{ session['user']['email'] }}) - {{ session['user']['type'] }} user</p>
         </div>
     {% endif %}
     <form id="storyForm">
