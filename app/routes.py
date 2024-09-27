@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 routes_bp = Blueprint('routes', __name__)
 from app.db import db
+from app import oauth
 from app.story_service import continue_story_service, rewrite_story_service
 
 # Register route added here
