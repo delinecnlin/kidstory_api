@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, session, current_app
-from flask_security import hash_password
+from flask_security import hash_password, login_required
 
 import logging
 from app.models import User, Story, Chapter
