@@ -16,12 +16,15 @@ from app.story_service import continue_story_service, rewrite_story_service
 @routes_bp.route('/auth/google')
 def auth_google():
     redirect_uri = url_for('routes.auth_callback', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
+    nonce = oauth.google.generate_nonce()
+    session['nonce'] = nonce
+    return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
 
 @routes_bp.route('/auth/callback')
 def auth_callback():
     token = oauth.google.authorize_access_token()
-    user_info = oauth.google.parse_id_token(token, nonce=session['nonce'])
+    nonce = session.pop('nonce', None)
+    user_info = oauth.google.parse_id_token(token, nonce=nonce)
     
     # 根据从 Google 返回的用户信息处理登录或注册
     if not user_info:
