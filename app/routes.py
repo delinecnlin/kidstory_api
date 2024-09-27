@@ -161,7 +161,7 @@ def add_chapter(story_id):
 
     return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
-@routes_bp.route('/api/stories/new', methods=['POST'])
+@routes_bp.route('/api/stories/new', methods=['GET', 'POST'])
 def create_story():
     data = request.get_json()
     new_story = Story(title=data['title'], body=data['body'])
