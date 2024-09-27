@@ -176,32 +176,16 @@ def create_or_add_chapter():
         story = Story.query.get_or_404(story_id)
         context = " ".join([chapter.body for chapter in story.chapters])
         preferences['context'] = context
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "你是一个乐于助人的助手。"},
-                {"role": "user", "content": "根据以下偏好续写故事: " + str(preferences)}
-            ],
-            max_tokens=150
-        )
-        new_content = response.choices[0].message['content'].strip()
+        new_content = continue_story_service(story_id, preferences)
         new_chapter = Chapter(title="New Chapter", body=new_content, story=story)
         db.session.add(new_chapter)
         db.session.commit()
         return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
     else:
         # 创建新故事
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "你是一个乐于助人的助手。"},
-                {"role": "user", "content": "根据以下偏好生成故事标题和概述: " + str(preferences)}
-            ],
-            max_tokens=150
-        )
-        story_content = response.choices[0].message['content'].strip().split('\n', 1)
-        title = story_content[0]
-        body = story_content[1] if len(story_content) > 1 else ""
+        new_story_data = generate_story(preferences)
+        title = new_story_data.get('title', 'Untitled Story')
+        body = new_story_data.get('body', '')
 
         image_url = generate_image(prompt=title, api_key='your_dalle_api_key', endpoint='your_dalle_endpoint')
 
