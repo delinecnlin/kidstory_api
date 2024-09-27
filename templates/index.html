@@ -28,7 +28,7 @@
     <div id="recommendedStories"></div>
 
     {% if session.get('user') %}
-        <div style="position: absolute; top: 10px; right: 10px;">
+        <div style="position: absolute; top: 10px; right: 10px; background-color: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
             <p>Logged in as: {{ session['user']['username'] }} ({{ session['user']['email'] }}) - {{ session['user']['type'] }} user</p>
         </div>
     {% else %}
