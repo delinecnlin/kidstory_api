@@ -11,6 +11,8 @@ routes_bp = Blueprint('routes', __name__)
 from app.db import db
 from app import oauth
 from app.story_service import continue_story_service, rewrite_story_service
+from app.image_service import generate_image
+import openai
 
 # Google OAuth 回调处理
 @routes_bp.route('/auth/google')
@@ -161,13 +163,30 @@ def add_chapter(story_id):
 
     return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
-@routes_bp.route('/api/stories/new', methods=['GET', 'POST'])
+@routes_bp.route('/api/stories/new', methods=['POST'])
 def create_story():
     data = request.get_json()
-    new_story = Story(title=data['title'], body=data['body'])
+    preferences = data.get('preferences', {})
+
+    # 使用 Azure OpenAI 生成标题和故事概况
+    openai.api_key = 'your_openai_api_key'
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt="Generate a story title and summary based on the following preferences: " + str(preferences),
+        max_tokens=150
+    )
+    story_content = response.choices[0].text.strip().split('\n', 1)
+    title = story_content[0]
+    body = story_content[1] if len(story_content) > 1 else ""
+
+    # 使用 Azure DALL-E 3 API 生成封面图片
+    image_url = generate_image(prompt=title, api_key='your_dalle_api_key', endpoint='your_dalle_endpoint')
+
+    new_story = Story(title=title, body=body)
     db.session.add(new_story)
     db.session.commit()
-    return jsonify({'id': new_story.id, 'title': new_story.title, 'body': new_story.body}), 201
+
+    return jsonify({'id': new_story.id, 'title': new_story.title, 'body': new_story.body, 'image_url': image_url}), 201
 
 @routes_bp.route('/api/stories/<int:id>', methods=['GET'])
 def get_story(id):

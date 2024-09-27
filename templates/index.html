@@ -18,7 +18,7 @@
         <input type="text" id="supporting_characters" name="supporting_characters"><br><br>
         <label for="user_added_content">User Added Content:</label>
         <textarea id="user_added_content" name="user_added_content"></textarea><br><br>
-        <button type="button" onclick="addChapter()">Add Chapter</button>
+        <button type="button" onclick="createStory()">Create Story</button>
     </form>
     <h2>Generated Story:</h2>
     <div id="generatedStory"></div>
@@ -40,20 +40,28 @@
 
     <script>
         async function createStory() {
-            const title = document.getElementById('storyTitle').value;
-            const body = document.getElementById('storyBody').value;
+            const main_characters = document.getElementById('main_characters').value;
+            const supporting_characters = document.getElementById('supporting_characters').value;
+            const user_added_content = document.getElementById('user_added_content').value;
 
             const response = await fetch('/api/stories/new', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ title: title, body: body })
+                body: JSON.stringify({
+                    preferences: {
+                        main_characters: main_characters,
+                        supporting_characters: supporting_characters,
+                        user_added_content: user_added_content
+                    }
+                })
             });
 
             const data = await response.json();
             if (response.ok) {
                 alert(`Story created with ID: ${data.id}`);
+                document.getElementById('generatedStory').innerHTML = `<h3>${data.title}</h3><p>${data.body}</p><img src="${data.image_url}" alt="Story Cover">`;
             } else {
                 alert(`Error: ${data.error}`);
             }
