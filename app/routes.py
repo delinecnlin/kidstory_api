@@ -13,6 +13,11 @@ from app import oauth
 from app.story_service import continue_story_service, rewrite_story_service
 
 # Google OAuth 回调处理
+@routes_bp.route('/auth/google')
+def auth_google():
+    redirect_uri = url_for('routes.auth_callback', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
 @routes_bp.route('/auth/callback')
 def auth_callback():
     token = oauth.google.authorize_access_token()
