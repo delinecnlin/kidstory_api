@@ -39,6 +39,26 @@
     {% endif %}
 
     <script>
+        async function createStory() {
+            const title = document.getElementById('storyTitle').value;
+            const body = document.getElementById('storyBody').value;
+
+            const response = await fetch('/api/stories/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: title, body: body })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(`Story created with ID: ${data.id}`);
+            } else {
+                alert(`Error: ${data.error}`);
+            }
+        }
+
         async function viewStories() {
             const response = await fetch('/api/stories');
             const stories = await response.json();
@@ -142,7 +162,13 @@
         <p class="lead">Use the buttons below to interact with the API.</p>
         <div class="mt-4">
             <a href="/api/stories" class="btn btn-primary">View Stories</a>
-            <a href="/api/stories/new" class="btn btn-success">Create New Story</a>
+            <form id="createStoryForm">
+                <label for="storyTitle">Story Title:</label>
+                <input type="text" id="storyTitle" name="storyTitle" required><br><br>
+                <label for="storyBody">Story Body:</label>
+                <textarea id="storyBody" name="storyBody" required></textarea><br><br>
+                <button type="button" onclick="createStory()">Create Story</button>
+            </form>
         </div>
     </div>
 </body>

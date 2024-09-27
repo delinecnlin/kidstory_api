@@ -161,10 +161,13 @@ def add_chapter(story_id):
 
     return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
-@routes_bp.route('/api/stories', methods=['GET'])
-def get_stories():
-    stories = Story.query.all()
-    return jsonify([{'id': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': chapter.id, 'title': chapter.title, 'body': chapter.body} for chapter in story.chapters]} for story in stories]), 200
+@routes_bp.route('/api/stories/new', methods=['POST'])
+def create_story():
+    data = request.get_json()
+    new_story = Story(title=data['title'], body=data['body'])
+    db.session.add(new_story)
+    db.session.commit()
+    return jsonify({'id': new_story.id, 'title': new_story.title, 'body': new_story.body}), 201
 
 @routes_bp.route('/api/stories/<int:id>', methods=['GET'])
 def get_story(id):
