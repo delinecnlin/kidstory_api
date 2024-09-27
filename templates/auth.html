@@ -11,6 +11,8 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
     <form method="POST" action="{{ url_for('routes.auth') }}">
+        <h2>Local User Login</h2>
+        <h2>Local User Registration</h2>
         <input type="hidden" name="action" value="register">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username"><br>
@@ -40,3 +42,4 @@
     </form>
 </body>
 </html>
+    <a href="{{ url_for('routes.auth_google') }}">Login with Google</a>
