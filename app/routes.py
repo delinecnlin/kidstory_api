@@ -12,47 +12,41 @@ from app.db import db
 from app.story_service import continue_story_service, rewrite_story_service
 
 # Register route added here
-@routes_bp.route('/register', methods=['GET', 'POST'])
-def register():
+@routes_bp.route('/auth', methods=['GET', 'POST'])
+def auth():
     if request.method == 'POST':
-        import random
-        import string
-
-        email = request.form['email']
-        password = request.form['password']
-        username = request.form.get('username', ''.join(random.choices(string.ascii_letters + string.digits, k=8)))
-
-        # 使用 current_app 获取 user_datastore
-        user_datastore = current_app.extensions['security'].datastore
-
-        # 检查邮箱和用户名是否已经存在
-        if user_datastore.find_user(email=email):
-            return render_template('register.html', error='Email already registered')
-        if user_datastore.find_user(username=username):
-            return render_template('register.html', error='Username already taken')
-
-        try:
-            user_datastore.create_user(username=username, email=email, password=hash_password(password))
-            db.session.commit()  # 保存到数据库
-            return redirect(url_for('routes.index'))  # 注册成功后跳转到index.html
-        except Exception as e:
-            db.session.rollback()
-            return render_template('register.html', error=str(e))
-    return render_template('register.html')
-
-@routes_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
+        action = request.form['action']
         email = request.form['email']
         password = request.form['password']
         user_datastore = current_app.extensions['security'].datastore
-        user = user_datastore.find_user(email=email)
-        if user and user.password == password:
-            session['user'] = {'email': user.email}
-            return redirect(url_for('routes.index'))
-        else:
-            return 'Invalid credentials', 401
-    return render_template('login.html')
+
+        if action == 'register':
+            import random
+            import string
+            username = request.form.get('username', ''.join(random.choices(string.ascii_letters + string.digits, k=8)))
+
+            if user_datastore.find_user(email=email):
+                return render_template('auth.html', error='Email already registered')
+            if user_datastore.find_user(username=username):
+                return render_template('auth.html', error='Username already taken')
+
+            try:
+                user_datastore.create_user(username=username, email=email, password=hash_password(password))
+                db.session.commit()
+                return redirect(url_for('routes.index'))
+            except Exception as e:
+                db.session.rollback()
+                return render_template('auth.html', error=str(e))
+
+        elif action == 'login':
+            user = user_datastore.find_user(email=email)
+            if user and user.password == password:
+                session['user'] = {'email': user.email}
+                return redirect(url_for('routes.index'))
+            else:
+                return render_template('auth.html', error='Invalid credentials')
+
+    return render_template('auth.html')
 
 @routes_bp.route('/fix_stories', methods=['POST'])
 def fix_stories():
