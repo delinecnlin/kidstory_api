@@ -27,9 +27,9 @@ def register():
 
         # 检查邮箱和用户名是否已经存在
         if user_datastore.find_user(email=email):
-            return 'Email already registered', 400
+            return render_template('register.html', error='Email already registered')
         if user_datastore.find_user(username=username):
-            return 'Username already taken', 400
+            return render_template('register.html', error='Username already taken')
 
         try:
             user_datastore.create_user(username=username, email=email, password=hash_password(password))
@@ -37,7 +37,7 @@ def register():
             return redirect(url_for('routes.index'))  # 注册成功后跳转到index.html
         except Exception as e:
             db.session.rollback()
-            return str(e), 500
+            return render_template('register.html', error=str(e))
     return render_template('register.html')
 
 @routes_bp.route('/login', methods=['GET', 'POST'])
