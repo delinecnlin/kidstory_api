@@ -49,7 +49,7 @@ def auth_callback():
         db.session.commit()
 
     # 登录用户
-    session['user'] = {'email': user.email, 'username': user.username, 'type': 'google'}
+    session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'google'}
 
     return redirect(url_for('routes.index'))
 
@@ -84,7 +84,7 @@ def auth():
             user = user_datastore.find_user(email=email)
             if user:
                 if user.password == password:
-                    session['user'] = {'email': user.email, 'username': user.username, 'type': 'local'}
+                    session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'local'}
                     return redirect(url_for('routes.index'))
                 else:
                     current_app.logger.error(f"Password mismatch for user {email}")
