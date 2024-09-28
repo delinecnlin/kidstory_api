@@ -38,6 +38,7 @@ def auth_callback():
     
     user_datastore = current_app.extensions['security'].datastore
     user = user_datastore.find_user(email=user_info['email'])
+    current_app.logger.debug(f"User found: {user}")
 
     # 如果用户不存在，注册新用户
     if not user:
@@ -50,6 +51,7 @@ def auth_callback():
 
     # 登录用户
     session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'google'}
+    current_app.logger.debug(f"User session set: {session['user']}")
 
     return redirect(url_for('routes.index'))
 
@@ -83,8 +85,10 @@ def auth():
         elif action == 'login':
             user = user_datastore.find_user(email=email)
             if user:
+                current_app.logger.debug(f"User found: {user}")
                 if user.password == password:
                     session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'local'}
+                    current_app.logger.debug(f"User session set: {session['user']}")
                     return redirect(url_for('routes.index'))
                 else:
                     current_app.logger.error(f"Password mismatch for user {email}")
