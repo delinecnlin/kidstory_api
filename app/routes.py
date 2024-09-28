@@ -136,8 +136,8 @@ def fix_stories():
         story.is_open = True
     db.session.commit()
     return render_template('fix_stories.html')
-@routes_bp.route('/recommendations', methods=['GET'])
-def get_recommendations():
+@routes_bp.route('/stories', methods=['GET'])
+def view_stories():
     stories = Story.query.all()
     return render_template('recommendations.html', stories=stories)
 
