@@ -73,13 +73,12 @@
 
             let response;
             if (storyId) {
-                response = await fetch('/api/stories/new_or_add_chapter', {
+                response = await fetch(`/api/stories/${storyId}/chapters`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        story_id: storyId,
                         preferences: {
                             main_characters: main_characters,
                             supporting_characters: supporting_characters,
@@ -88,7 +87,7 @@
                     })
                 });
             } else {
-                response = await fetch('/api/stories/new_or_add_chapter', {
+                response = await fetch('/api/stories/new', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
