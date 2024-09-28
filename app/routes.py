@@ -199,7 +199,10 @@ def create_or_add_chapter():
 
         user = User.query.filter_by(email=user_email).first()
         if not user:
+            current_app.logger.error(f"User not found: {user_email}")
             return jsonify({'error': 'User not found'}), 404
+        else:
+            current_app.logger.debug(f"User found: {user_email}")
 
         new_story = Story(title=title, body=body, user_id=user.id)
         db.session.add(new_story)
