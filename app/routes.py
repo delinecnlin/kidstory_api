@@ -44,7 +44,7 @@ def auth_callback():
         user = user_datastore.create_user(
             email=user_info['email'],
             username=user_info.get('name', user_info['email']),
-            password=None  # Google OAuth 登录通常不需要密码
+            password=hash_password('default_password')  # 设置默认密码
         )
         db.session.commit()
 
