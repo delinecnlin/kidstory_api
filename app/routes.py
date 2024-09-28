@@ -210,21 +210,24 @@ def create_or_add_chapter():
         new_content = generate_story(preferences)
         if 'body' in new_content:
             new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
+            db.session.add(new_chapter)
+            db.session.commit()
+            return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
         else:
             return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
-        db.session.add(new_chapter)
-        db.session.commit()
-        return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
     else:
         # 创建新故事
+        new_story = Story(title="New Story", body="", user_id=session['user']['id'])
+        db.session.add(new_story)
+        db.session.commit()
         new_content = generate_story(preferences)
         if 'body' in new_content:
-            new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
+            new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=new_story)
+            db.session.add(new_chapter)
+            db.session.commit()
+            return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in new_story.chapters]}), 201
         else:
             return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
-        db.session.add(new_chapter)
-        db.session.commit()
-        return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
 @routes_bp.route('/stories/<int:id>', methods=['GET'])
 def get_story(id):

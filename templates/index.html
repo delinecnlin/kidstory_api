@@ -71,20 +71,37 @@
                 progressBarFill.style.width = progress + '%';
             }, 500);
 
-            const response = await fetch('/api/stories/new_or_add_chapter', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    story_id: storyId ? storyId : null,
-                    preferences: {
-                        main_characters: main_characters,
-                        supporting_characters: supporting_characters,
-                        user_added_content: user_added_content
-                    }
-                })
-            });
+            let response;
+            if (storyId) {
+                response = await fetch('/api/stories/new_or_add_chapter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        story_id: storyId,
+                        preferences: {
+                            main_characters: main_characters,
+                            supporting_characters: supporting_characters,
+                            user_added_content: user_added_content
+                        }
+                    })
+                });
+            } else {
+                response = await fetch('/api/stories/new_or_add_chapter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        preferences: {
+                            main_characters: main_characters,
+                            supporting_characters: supporting_characters,
+                            user_added_content: user_added_content
+                        }
+                    })
+                });
+            }
 
             const data = await response.json();
             // 隐藏进度条
