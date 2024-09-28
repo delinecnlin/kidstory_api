@@ -23,8 +23,12 @@
         <textarea id="user_added_content" name="user_added_content"></textarea><br><br>
         <button type="button" onclick="createOrAddChapter()">Add Chapter</button>
     </form>
-    <h2>Your Stories:</h2>
-    <div id="userStories"></div>
+    <h2>Recent Chapters:</h2>
+    <ul>
+        {% for chapter in recent_chapters %}
+            <li>{{ chapter.title }} - {{ chapter.body[:100] }}...</li>
+        {% endfor %}
+    </ul>
 
     <a href="/recommendations" id="fetchRecommendationsButton">Fetch Recommendations</a>
     <h2>Recommended Stories:</h2>
@@ -165,8 +169,6 @@
         // Fetch recommendations on button click
         document.getElementById('fetchRecommendationsButton').addEventListener('click', fetchRecommendations);
     </script>
-    <button onclick="viewStories()">View Stories</button>
-    <pre id="viewStories"></pre>
 
     <script>
         async function addChapter() {
@@ -220,7 +222,7 @@
         <h1 class="mt-5">Welcome to the Story API</h1>
         <p class="lead">Use the buttons below to interact with the API.</p>
         <div class="mt-4">
-            <a href="/api/stories" class="btn btn-primary">View Stories</a>
+            <a href="/stories" class="btn btn-primary">View Stories</a>
             <form id="createStoryForm">
                 <label for="storyTitle">Story Title:</label>
                 <input type="text" id="storyTitle" name="storyTitle" required><br><br>
