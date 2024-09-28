@@ -138,12 +138,13 @@ def fix_stories():
     return render_template('fix_stories.html')
 @routes_bp.route('/recommendations', methods=['GET'])
 def get_recommendations():
-    open_stories = Story.query.filter_by(is_open=True).limit(4).all()
-    return render_template('recommendations.html', stories=open_stories)
+    stories = Story.query.all()
+    return render_template('recommendations.html', stories=stories)
 
 @routes_bp.route('/')
 def index():
-    return render_template('index.html')
+    recent_chapters = Chapter.query.order_by(Chapter.id.desc()).limit(5).all()
+    return render_template('index.html', recent_chapters=recent_chapters)
 
 @routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
@@ -199,10 +200,10 @@ def create_or_add_chapter():
         db.session.commit()
         return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
-@routes_bp.route('/api/stories/<int:id>', methods=['GET'])
+@routes_bp.route('/stories/<int:id>', methods=['GET'])
 def get_story(id):
     story = Story.query.get_or_404(id)
-    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
+    return render_template('story.html', story=story)
 
 @routes_bp.route('/api/stories/<int:id>', methods=['DELETE'])
 def delete_story(id):
