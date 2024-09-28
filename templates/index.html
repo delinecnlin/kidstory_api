@@ -13,7 +13,10 @@
     <form id="storyForm" style="margin-top: 20px;">
         <label for="storySelect">Select Your Story:</label>
         <select id="storySelect" name="storySelect">
-            <!-- Options will be populated by JavaScript -->
+            <option value="">Select a story</option>
+            {% for story in user_stories %}
+                <option value="{{ story.id }}">ID: {{ story.id }} - {{ story.title }}</option>
+            {% endfor %}
         </select><br><br>
         <label for="main_characters">Main Characters:</label>
         <input type="text" id="main_characters" name="main_characters"><br><br>
