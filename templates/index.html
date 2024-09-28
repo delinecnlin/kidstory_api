@@ -10,7 +10,7 @@
     <div id="progressBar" style="display: none; width: 100%; background-color: #f3f3f3;">
         <div id="progressBarFill" style="width: 0%; height: 30px; background-color: #4caf50;"></div>
     </div>
-    <h2>POST /api/stories/new</h2>
+    <h2 style="background-color: yellow;">POST /api/stories/new</h2>
     <form id="storyForm" style="margin-top: 20px;">
         <label for="storySelect">Select Your Story:</label>
         <select id="storySelect" name="storySelect">
@@ -27,7 +27,7 @@
         <textarea id="user_added_content" name="user_added_content"></textarea><br><br>
         <button type="button" onclick="createOrAddChapter()">Add Chapter</button>
     </form>
-    <h2>GET /api/user_stories</h2>
+    <h2 style="background-color: yellow;">GET /api/user_stories</h2>
     <ul>
         {% for item in chapters_with_story_info %}
             <li>
@@ -40,7 +40,7 @@
         {% endfor %}
     </ul>
 
-    <h2>GET /recommendations</h2>
+    <h2 style="background-color: yellow;">GET /recommendations</h2>
     <a href="/stories" id="fetchRecommendationsButton">View Stories</a>
     <h2>Recommended Stories:</h2>
     <div id="recommendedStories"></div>
@@ -56,7 +56,7 @@
         <a href="{{ url_for('routes.auth_google') }}">登录</a>
     {% endif %}
 
-    <h2>POST /api/stories/:story_id/chapters</h2>
+    <h2 style="background-color: yellow;">POST /api/stories/:story_id/chapters</h2>
     <script>
         async function createOrAddChapter() {
             const main_characters = document.getElementById('main_characters').value;
@@ -246,19 +246,5 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-5">Welcome to the Story API</h1>
-        <p class="lead">Use the buttons below to interact with the API.</p>
-        <div class="mt-4">
-            <a href="/stories" class="btn btn-primary">View Stories</a>
-            <form id="createStoryForm">
-                <label for="storyTitle">Story Title:</label>
-                <input type="text" id="storyTitle" name="storyTitle" required><br><br>
-                <label for="storyBody">Story Body:</label>
-                <textarea id="storyBody" name="storyBody" required></textarea><br><br>
-                <button type="button" onclick="createStory()">Create Story</button>
-            </form>
-        </div>
-    </div>
 </body>
 </html>
