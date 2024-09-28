@@ -242,11 +242,25 @@ def delete_chapter(id, chapter_id):
     db.session.commit()
     return '', 204
 
-@routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>/rewrite', methods=['POST'])
-def rewrite_chapter(id, chapter_id):
-    data = request.get_json()
-    chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
-    new_content = rewrite_chapter(id, chapter_id, data['preferences'])
-    chapter.body = new_content['body']
-    db.session.commit()
-    return jsonify({'id': chapter.id, 'title': chapter.title, 'body': chapter.body}), 200
+@routes_bp.route('/api/user_stories', methods=['GET'])
+def get_user_stories():
+    user_email = session.get('user', {}).get('email')
+    if not user_email:
+        return jsonify({'error': 'User not logged in'}), 401
+
+    user = User.query.filter_by(email=user_email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    stories = Story.query.filter_by(user_id=user.id).all()
+    user_stories = []
+    for story in stories:
+        user_stories.append({
+            'id': story.id,
+            'title': story.title,
+            'body': story.body,
+            'image_url': story.image_url,
+            'chapters': [{'id': chapter.id, 'title': chapter.title, 'body': chapter.body} for chapter in story.chapters]
+        })
+
+    return jsonify(user_stories), 200
