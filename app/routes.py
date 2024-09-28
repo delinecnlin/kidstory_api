@@ -151,6 +151,14 @@ def view_stories():
 
 @routes_bp.route('/')
 def index():
+    user_email = session.get('user', {}).get('email')
+    if not user_email:
+        return redirect(url_for('routes.auth'))
+
+    user = User.query.filter_by(email=user_email).first()
+    if not user:
+        return redirect(url_for('routes.auth'))
+
     recent_chapters = Chapter.query.order_by(Chapter.id.desc()).limit(5).all()
     chapters_with_story_info = [
         {
@@ -160,7 +168,9 @@ def index():
         }
         for idx, chapter in enumerate(recent_chapters)
     ]
-    return render_template('index.html', chapters_with_story_info=chapters_with_story_info)
+
+    user_stories = Story.query.filter_by(user_id=user.id).all()
+    return render_template('index.html', chapters_with_story_info=chapters_with_story_info, user_stories=user_stories)
 
 @routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
