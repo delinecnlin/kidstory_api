@@ -180,7 +180,7 @@ def create_or_add_chapter():
         story = Story.query.get_or_404(story_id)
         context = " ".join([chapter.body for chapter in story.chapters])
         preferences['context'] = context
-        new_content = continue_story_service(story_id, preferences)
+        new_content = generate_story(preferences)
         if 'body' in new_content:
             new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
         else:
@@ -190,31 +190,14 @@ def create_or_add_chapter():
         return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
     else:
         # 创建新故事
-        new_story_data = generate_story(preferences)
-        title_response = requests.post(BASE_URL + TITLE_FLOW_ID, json={"question": new_story_data.get('body', '')})
-        title_response.raise_for_status()
-        title_data = title_response.json()
-        title = title_data.get('text', 'Untitled Story')[:10]
-        body = new_story_data.get('body', '')
-
-        image_url = generate_image(prompt=title)
-
-        user_email = session.get('user', {}).get('email')
-        if not user_email:
-            return jsonify({'error': 'User not logged in'}), 401
-
-        user = User.query.filter_by(email=user_email).first()
-        if not user:
-            current_app.logger.error(f"User not found: {user_email}")
-            return jsonify({'error': 'User not found'}), 404
+        new_content = generate_story(preferences)
+        if 'body' in new_content:
+            new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
         else:
-            current_app.logger.debug(f"User found: {user_email}")
-
-        new_story = Story(title=title, body=body, user_id=user.id)
-        db.session.add(new_story)
+            return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
+        db.session.add(new_chapter)
         db.session.commit()
-
-        return jsonify({'id': new_story.id, 'title': new_story.title, 'body': new_story.body, 'image_url': image_url}), 201
+        return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
 
 @routes_bp.route('/api/stories/<int:id>', methods=['GET'])
 def get_story(id):
