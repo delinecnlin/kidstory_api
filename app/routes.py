@@ -193,7 +193,15 @@ def create_or_add_chapter():
 
         image_url = generate_image(prompt=title)
 
-        new_story = Story(title=title, body=body)
+        user_email = session.get('user', {}).get('email')
+        if not user_email:
+            return jsonify({'error': 'User not logged in'}), 401
+
+        user = User.query.filter_by(email=user_email).first()
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        new_story = Story(title=title, body=body, user_id=user.id)
         db.session.add(new_story)
         db.session.commit()
 
