@@ -25,8 +25,14 @@
     </form>
     <h2>Recent Chapters:</h2>
     <ul>
-        {% for chapter in recent_chapters %}
-            <li>{{ chapter.title }} - {{ chapter.body[:100] }}...</li>
+        {% for item in chapters_with_story_info %}
+            <li>
+                <strong>Story ID:</strong> {{ item.story.id }}<br>
+                <strong>Story Title:</strong> {{ item.story.title }}<br>
+                <strong>Chapter Number:</strong> {{ item.chapter_number }}<br>
+                <strong>Chapter Title:</strong> {{ item.chapter.title }}<br>
+                <strong>Chapter Excerpt:</strong> {{ item.chapter.body[:100] }}...
+            </li>
         {% endfor %}
     </ul>
 

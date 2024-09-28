@@ -144,7 +144,15 @@ def view_stories():
 @routes_bp.route('/')
 def index():
     recent_chapters = Chapter.query.order_by(Chapter.id.desc()).limit(5).all()
-    return render_template('index.html', recent_chapters=recent_chapters)
+    chapters_with_story_info = [
+        {
+            "chapter": chapter,
+            "story": Story.query.get(chapter.story_id),
+            "chapter_number": idx + 1
+        }
+        for idx, chapter in enumerate(recent_chapters)
+    ]
+    return render_template('index.html', chapters_with_story_info=chapters_with_story_info)
 
 @routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
