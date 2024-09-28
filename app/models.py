@@ -33,6 +33,7 @@ class Story(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     body = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     chapters = db.relationship('Chapter', backref='story', lazy=True)
 
 class Chapter(db.Model):
