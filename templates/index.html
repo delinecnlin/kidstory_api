@@ -93,6 +93,8 @@
                 storySelect.appendChild(option);
             });
         }
+
+        async function fetchUserStories() {
             const response = await fetch('/api/user_stories');
             const userStories = await response.json();
             const userStoriesDiv = document.getElementById('userStories');
@@ -115,7 +117,7 @@
                 storySelect.appendChild(option);
             });
         }
-        document.addEventListener('DOMContentLoaded', fetchUserStories);
+
         document.addEventListener('DOMContentLoaded', fetchUserStories);
 
         async function fetchRecommendations() {
@@ -173,7 +175,6 @@
                         main_characters: main_characters,
                         supporting_characters: supporting_characters,
                         user_added_content: user_added_content,
-                        context: context,
                         context: context
                     }
                 })
