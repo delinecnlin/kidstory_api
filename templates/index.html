@@ -7,7 +7,10 @@
 </head>
 <body>
     <h1>Welcome to the Storytelling App!</h1>
-    <form id="storyForm">
+    <div id="progressBar" style="display: none; width: 100%; background-color: #f3f3f3;">
+        <div id="progressBarFill" style="width: 0%; height: 30px; background-color: #4caf50;"></div>
+    </div>
+    <form id="storyForm" style="margin-top: 20px;">
         <label for="storySelect">Select Your Story:</label>
         <select id="storySelect" name="storySelect">
             <!-- Options will be populated by JavaScript -->
@@ -46,6 +49,15 @@
 
             const storyId = document.getElementById('storySelect').value;
 
+            // 显示进度条
+            document.getElementById('progressBar').style.display = 'block';
+            let progress = 0;
+            const progressBarFill = document.getElementById('progressBarFill');
+            const interval = setInterval(() => {
+                progress = (progress + 10) % 100;
+                progressBarFill.style.width = progress + '%';
+            }, 500);
+
             const response = await fetch('/api/stories/new_or_add_chapter', {
                 method: 'POST',
                 headers: {
@@ -62,6 +74,11 @@
             });
 
             const data = await response.json();
+            // 隐藏进度条
+            clearInterval(interval);
+            document.getElementById('progressBar').style.display = 'none';
+            progressBarFill.style.width = '0%';
+
             if (response.ok) {
                 alert(`Story created with ID: ${data.id}`);
                 document.getElementById('generatedStory').innerHTML = `<h3>${data.title}</h3><p>${data.body}</p><img src="${data.image_url}" alt="Story Cover">`;
