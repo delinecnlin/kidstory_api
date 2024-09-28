@@ -5,7 +5,7 @@ import logging
 
 import requests
 from app.models import User, Story, Chapter
-from app.story_service import generate_story, BASE_URL, TITLE_FLOW_ID
+from app.story_service import generate_story, generate_story_title, BASE_URL, TITLE_FLOW_ID
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
