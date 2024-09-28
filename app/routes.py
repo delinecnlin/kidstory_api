@@ -2,8 +2,11 @@ from flask import Blueprint, request, jsonify, render_template, redirect, url_fo
 from flask_security import hash_password, login_required
 
 import logging
+
+import requests
 from app.models import User, Story, Chapter
-from app.story_service import generate_story
+from app.story_service import generate_story, BASE_URL, TITLE_FLOW_ID
+import requests
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -182,7 +185,10 @@ def create_or_add_chapter():
     else:
         # 创建新故事
         new_story_data = generate_story(preferences)
-        title = new_story_data.get('title', 'Untitled Story')
+        title_response = requests.post(BASE_URL + TITLE_FLOW_ID, json={"question": new_story_data.get('body', '')})
+        title_response.raise_for_status()
+        title_data = title_response.json()
+        title = title_data.get('text', 'Untitled Story')[:10]
         body = new_story_data.get('body', '')
 
         image_url = generate_image(prompt=title)
