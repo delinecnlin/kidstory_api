@@ -93,8 +93,30 @@
                 storySelect.appendChild(option);
             });
         }
+            const response = await fetch('/api/user_stories');
+            const userStories = await response.json();
+            const userStoriesDiv = document.getElementById('userStories');
+            const storySelect = document.getElementById('storySelect');
+            userStoriesDiv.innerHTML = '';
+            storySelect.innerHTML = '<option value="">Select a story</option>';
+
+            userStories.forEach(story => {
+                const storyDiv = document.createElement('div');
+                storyDiv.innerHTML = `<strong>Story ID:</strong> ${story.id}<br><strong>Title:</strong> ${story.title}<br><strong>Body:</strong> ${story.body}<br><img src="${story.image_url}" alt="Story Cover"><br><strong>Chapters:</strong><ul>`;
+                story.chapters.forEach(chapter => {
+                    storyDiv.innerHTML += `<li><strong>Chapter ID:</strong> ${chapter.id}<br><strong>Title:</strong> ${chapter.title}<br><strong>Body:</strong> ${chapter.body}</li>`;
+                });
+                storyDiv.innerHTML += `</ul>`;
+                userStoriesDiv.appendChild(storyDiv);
+
+                const option = document.createElement('option');
+                option.value = story.id;
+                option.text = `ID: ${story.id} - ${story.title}`;
+                storySelect.appendChild(option);
+            });
+        }
         document.addEventListener('DOMContentLoaded', fetchUserStories);
-        });
+        document.addEventListener('DOMContentLoaded', fetchUserStories);
 
         async function fetchRecommendations() {
             console.log("Fetching recommendations...");
