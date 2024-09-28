@@ -158,7 +158,10 @@ def add_chapter(story_id):
     new_content = generate_story(preferences)
 
     if 'body' in new_content:
-        new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
+        if 'body' in new_content:
+            new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
+        else:
+            return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
     else:
         return jsonify({'error': 'Chapter generation failed'}), 500
     db.session.add(new_chapter)
@@ -178,7 +181,10 @@ def create_or_add_chapter():
         context = " ".join([chapter.body for chapter in story.chapters])
         preferences['context'] = context
         new_content = continue_story_service(story_id, preferences)
-        new_chapter = Chapter(title="New Chapter", body=new_content, story=story)
+        if 'body' in new_content:
+            new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
+        else:
+            return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
         db.session.add(new_chapter)
         db.session.commit()
         return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
