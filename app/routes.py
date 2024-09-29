@@ -182,6 +182,8 @@ def add_chapter(story_id):
     preferences = data.get('preferences', {})
     story_id = data.get('story_id')
 
+    current_app.logger.debug(f"Story ID: {story_id}")
+
     if story_id:
         story = Story.query.get_or_404(story_id)
         context = " ".join([chapter.body for chapter in story.chapters])

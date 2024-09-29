@@ -74,35 +74,21 @@
             }, 500);
 
             let response;
-            if (storyId) {
-                response = await fetch(`/api/stories/${storyId}/chapters`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        preferences: {
-                            main_characters: main_characters,
-                            supporting_characters: supporting_characters,
-                            user_added_content: user_added_content
-                        }
-                    })
-                });
-            } else {
-                response = await fetch('/api/stories/new', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        preferences: {
-                            main_characters: main_characters,
-                            supporting_characters: supporting_characters,
-                            user_added_content: user_added_content
-                        }
-                    })
-                });
-            }
+            console.log(`Story ID: ${storyId}`);
+
+            response = await fetch(`/api/stories/${storyId}/chapters`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    preferences: {
+                        main_characters: main_characters,
+                        supporting_characters: supporting_characters,
+                        user_added_content: user_added_content
+                    }
+                })
+            });
 
             const data = await response.json();
             // 隐藏进度条
