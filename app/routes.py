@@ -209,21 +209,6 @@ def add_chapter(story_id):
             return jsonify({'error': 'Failed to generate story title. Please try again later.'}), 500
 
 
-@routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
-def add_chapter(story_id):
-    data = request.get_json()
-    preferences = data.get('preferences', {})
-    story = Story.query.get_or_404(story_id)
-    context = " ".join([chapter.body for chapter in story.chapters])
-    preferences['context'] = context
-    new_content = generate_story(preferences)
-    if 'body' in new_content:
-        new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
-        db.session.add(new_chapter)
-        db.session.commit()
-        return jsonify({'story': story.id, 'title': story.title, 'body': story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body} for chapter in story.chapters]}), 201
-    else:
-        return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
 
 @routes_bp.route('/stories/<int:id>', methods=['GET'])
 def get_story(id):
