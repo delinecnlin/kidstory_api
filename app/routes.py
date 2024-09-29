@@ -257,7 +257,7 @@ def delete_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     db.session.delete(chapter)
     db.session.commit()
-    return '', 204
+    return jsonify({'message': 'Chapter deleted successfully'}), 200
 
 @routes_bp.route('/api/user_stories', methods=['GET'])
 def get_user_stories():
