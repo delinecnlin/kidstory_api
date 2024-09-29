@@ -204,18 +204,22 @@ def create_story():
     if 'user' not in session or 'id' not in session['user']:
         return jsonify({'error': 'User not logged in or user ID not found in session'}), 401
 
-    new_content = generate_story_title(preferences)
-    if 'title' in new_content:
-        new_story = Story(title=new_content['title'], body="", user_id=session['user']['id'])
-        new_story.image_url = generate_image(new_content['title'])
-        db.session.add(new_story)
-        db.session.commit()
-        new_chapter = Chapter(title="New Chapter", body=new_content['excerpt'], story=new_story)
-        db.session.add(new_chapter)
-        db.session.commit()
-        return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body}]}), 201
+    new_content = generate_chapter_content(preferences)
+    if 'body' in new_content:
+        title_content = generate_story_title(preferences)
+        if 'title' in title_content:
+            new_story = Story(title=title_content['title'], body="", user_id=session['user']['id'])
+            new_story.image_url = title_content['image_url']
+            db.session.add(new_story)
+            db.session.commit()
+            new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=new_story)
+            db.session.add(new_chapter)
+            db.session.commit()
+            return jsonify({'story': new_story.id, 'title': new_story.title, 'body': new_story.body, 'chapters': [{'id': new_chapter.id, 'title': new_chapter.title, 'body': new_chapter.body}]}), 201
+        else:
+            return jsonify({'error': 'Failed to generate story title. Please try again later.'}), 500
     else:
-        return jsonify({'error': 'Failed to generate story title. Please try again later.'}), 500
+        return jsonify({'error': 'Failed to generate story. Please try again later.'}), 500
 
 
 
