@@ -43,3 +43,16 @@
 </body>
 </html>
     <a href="{{ url_for('routes.auth_google') }}">Login with Google</a>
+<h2>Registered Users</h2>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>Password</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.email }}</td>
+        <td>{{ user.password }}</td>
+    </tr>
+    {% endfor %}
+</table>

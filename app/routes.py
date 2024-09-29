@@ -99,7 +99,8 @@ def auth():
                 current_app.logger.error(f"User not found: {email}")
                 return render_template('auth.html', error='User not found')
 
-    return render_template('auth.html')
+    users = User.query.all()
+    return render_template('auth.html', users=users)
 
 @routes_bp.route('/change_password', methods=['GET', 'POST'])
 @login_required
