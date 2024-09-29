@@ -50,6 +50,7 @@ def auth_callback():
         db.session.commit()
 
     # 登录用户
+    current_app.logger.debug(f"User ID: {user.id}")
     session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'google'}
     current_app.logger.debug(f"User session set: {session['user']}")
 
@@ -88,6 +89,7 @@ def auth():
                 current_app.logger.debug(f"User found: {user}")
                 if user.password == password:
                     session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'local'}
+                    current_app.logger.debug(f"User ID: {user.id}")
                     current_app.logger.debug(f"User session set: {session['user']}")
                     return redirect(url_for('routes.index'))
                 else:
@@ -197,6 +199,10 @@ def add_chapter(story_id):
 def create_story():
     data = request.get_json()
     preferences = data.get('preferences', {})
+
+    current_app.logger.debug(f"Session data: {session}")
+    if 'user' not in session or 'id' not in session['user']:
+        return jsonify({'error': 'User not logged in or user ID not found in session'}), 401
 
     new_content = generate_story_title(preferences)
     if 'title' in new_content:
