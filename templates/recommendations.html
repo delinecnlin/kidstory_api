@@ -8,8 +8,25 @@
     <h1>Open Stories</h1>
     <ul>
         {% for story in stories %}
-            <li><a href="{{ url_for('routes.get_story', id=story.id) }}">{{ story.title }}</a> - {{ story.excerpt }}</li>
+            <li>
+                <a href="{{ url_for('routes.get_story', id=story.id) }}">{{ story.title }}</a> - {{ story.excerpt }}
+                <button onclick="deleteStory({{ story.id }})">Delete Story</button>
+            </li>
         {% endfor %}
     </ul>
+<script>
+    async function deleteStory(storyId) {
+        const response = await fetch(`/api/stories/${storyId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Story deleted successfully');
+            location.reload();
+        } else {
+            alert('Failed to delete story');
+        }
+    }
+</script>
 </body>
 </html>
