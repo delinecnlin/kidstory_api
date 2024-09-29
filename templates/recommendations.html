@@ -8,7 +8,7 @@
     <h1>Open Stories</h1>
     <ul>
         {% for story in stories %}
-            <li><a href="{{ url_for('routes.get_story', id=story.id) }}">{{ story.title }}</a> - {{ story.body }}</li>
+            <li><a href="{{ url_for('routes.get_story', id=story.id) }}">{{ story.title }}</a> - {{ story.excerpt }}</li>
         {% endfor %}
     </ul>
 </body>

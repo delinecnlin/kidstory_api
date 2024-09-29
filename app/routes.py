@@ -153,7 +153,7 @@ def view_stories():
         return jsonify({'error': 'User not found'}), 404
 
     stories = Story.query.filter_by(user_id=user.id).all()
-    return render_template('recommendations.html', stories=stories)
+    return render_template('recommendations.html', stories=stories, user_stories=user_stories)
 
 @routes_bp.route('/')
 def index():
@@ -208,7 +208,7 @@ def create_story():
     if 'body' in new_content:
         title_content = generate_story_title(preferences)
         if 'title' in title_content:
-            new_story = Story(title=title_content['title'], body="", user_id=session['user']['id'])
+            new_story = Story(title=title_content['title'], body="", excerpt=title_content['excerpt'], user_id=session['user']['id'])
             new_story.image_url = title_content['image_url']
             db.session.add(new_story)
             db.session.commit()
