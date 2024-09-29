@@ -5,7 +5,7 @@ import logging
 
 import requests
 from app.models import User, Story, Chapter
-from app.story_service import generate_story, generate_story_title, BASE_URL, TITLE_FLOW_ID
+from app.story_service import generate_chapter_content, generate_story_title, BASE_URL, TITLE_FLOW_ID
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
@@ -184,7 +184,7 @@ def add_chapter(story_id):
     story = Story.query.get_or_404(story_id)
     context = " ".join([chapter.body for chapter in story.chapters])
     preferences['context'] = context
-    new_content = generate_story(preferences)
+    new_content = generate_chapter_content(preferences)
     if 'body' in new_content:
         new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
         db.session.add(new_chapter)
