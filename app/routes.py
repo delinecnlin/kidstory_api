@@ -232,6 +232,9 @@ def get_story(id):
 @routes_bp.route('/api/stories/<int:id>', methods=['DELETE'])
 def delete_story(id):
     story = Story.query.get_or_404(id)
+    # 删除相关章节
+    for chapter in story.chapters:
+        db.session.delete(chapter)
     db.session.delete(story)
     db.session.commit()
     return '', 204
