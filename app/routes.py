@@ -153,6 +153,7 @@ def view_stories():
         return jsonify({'error': 'User not found'}), 404
 
     stories = Story.query.filter_by(user_id=user.id).all()
+    user_stories = stories  # 确保 user_stories 被定义
     return render_template('recommendations.html', stories=stories, user_stories=user_stories)
 
 @routes_bp.route('/')
