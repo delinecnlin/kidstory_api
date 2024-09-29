@@ -87,7 +87,11 @@ def auth():
             user = user_datastore.find_user(email=email)
             if user:
                 current_app.logger.debug(f"User found: {user}")
-                if user.password == password:
+                current_app.logger.debug(f"Input password: {password}")
+                current_app.logger.debug(f"Stored password hash: {user.password}")
+                password_match = verify_password(password, user.password)
+                current_app.logger.debug(f"Password match result: {password_match}")
+                if password_match:
                     session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'local'}
                     current_app.logger.debug(f"User ID: {user.id}")
                     current_app.logger.debug(f"User session set: {session['user']}")
