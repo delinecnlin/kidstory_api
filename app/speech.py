@@ -22,8 +22,6 @@ def transcribe_audio(file_path):
     print(f"Transcription URL: {url}")  # 添加调试信息
   
     response = requests.post(url, headers=headers, files=files)
-    print(f"Response status code: {response.status_code}")  # 添加调试信息
-    print(f"Response text: {response.text}")  # 添加调试信息
     response.raise_for_status()
     return response.json()['text']
 
