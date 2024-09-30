@@ -13,15 +13,21 @@ def transcribe_audio(file_path):
 
     url = f"{endpoint}/openai/deployments/{deployment_id}/audio/transcriptions?api-version=2024-06-01"
     headers = {
-        'api-key': api_key
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'multipart/form-data'
     }
-    files = {'file': ('audio.wav', open(file_path, 'rb'), 'audio/wav')}
+    files = {
+        'file': ('audio.wav', open(file_path, 'rb'), 'audio/wav'),
+        'model': (None, 'whisper-1')
+    }
 
     print(f"Transcription URL: {url}")  # 添加调试信息
   
     response = requests.post(url, headers=headers, files=files)
     response.raise_for_status()
-    return response.json()['text']
+    print(f"Response status code: {response.status_code}")
+    print(f"Response text: {response.text}")
+    return response.json().get('text', 'Transcription failed')
 
 def text_to_speech(text, output_file):
     """
