@@ -5,6 +5,9 @@ import logging
 
 import requests
 from app.models import User, Story, Chapter
+from app.speech import transcribe_audio
+import os
+import tempfile
 from app.story_service import generate_chapter_content, generate_story_title, BASE_URL, TITLE_FLOW_ID
 import requests
 
@@ -268,6 +271,19 @@ def delete_chapter(id, chapter_id):
     db.session.delete(chapter)
     db.session.commit()
     return jsonify({'message': 'Chapter deleted successfully'}), 200
+
+@routes_bp.route('/api/transcribe', methods=['POST'])
+def transcribe():
+    if 'audio' not in request.files:
+        return jsonify({'error': 'No audio file provided'}), 400
+
+    audio_file = request.files['audio']
+    with tempfile.NamedTemporaryFile(delete=False) as temp_audio:
+        audio_file.save(temp_audio.name)
+        transcription = transcribe_audio(temp_audio.name)
+        os.remove(temp_audio.name)
+
+    return jsonify({'transcription': transcription})
 
 @routes_bp.route('/api/user_stories', methods=['GET'])
 def get_user_stories():
