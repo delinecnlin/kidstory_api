@@ -116,6 +116,8 @@ def change_password():
         user_datastore = current_app.extensions['security'].datastore
         user = user_datastore.find_user(email=session['user']['email'])
 
+        current_app.logger.debug(f"Input current password: {current_password}")
+        current_app.logger.debug(f"Stored password hash: {user.password}")
         if not user or not verify_password(current_password, user.password):
             return render_template('auth.html', error='Current password is incorrect')
 
