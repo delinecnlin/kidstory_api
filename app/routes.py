@@ -281,7 +281,7 @@ def transcribe():
     with tempfile.NamedTemporaryFile(delete=False) as temp_audio:
         audio_file.save(temp_audio.name)
         transcription = transcribe_audio(temp_audio.name)
-        os.remove(temp_audio.name)
+    os.remove(temp_audio.name)
 
     return jsonify({'transcription': transcription})
 
