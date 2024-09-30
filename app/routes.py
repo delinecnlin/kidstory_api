@@ -8,7 +8,7 @@ from app.models import User, Story, Chapter
 from app.speech import transcribe_audio
 import os
 import tempfile
-from app.story_service import generate_chapter_content, generate_story_title, BASE_URL, TITLE_FLOW_ID
+from app.story_service import generate_chapter_content, generate_story_title
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
