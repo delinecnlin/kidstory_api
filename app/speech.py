@@ -11,7 +11,12 @@ def transcribe_audio(file_path):
     deployment_id = os.getenv('AZURE_WHISPER_DEPLOYMENT_ID')
     api_key = os.getenv('AZURE_WHISPER_API_KEY')
 
+    print(f"Endpoint: {endpoint}")
+    print(f"Deployment ID: {deployment_id}")
+    print(f"API Key: {api_key}")
+
     url = f"{endpoint}/openai/deployments/{deployment_id}/audio/transcriptions?api-version=2024-06-01"
+    print(f"Transcription URL: {url}")  # 添加调试信息
     headers = {
         'Authorization': f'Bearer {api_key}',
         'Content-Type': 'multipart/form-data'
