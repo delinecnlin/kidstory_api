@@ -26,7 +26,12 @@ def transcribe_audio(file_path):
     payload = {}
     
     response = requests.request("POST", url, headers=headers, data=payload, files=files)
-    return response.json().get('text', 'Transcription failed')
+    try:
+        response_data = response.json()
+        return response_data.get('text', 'Transcription failed')
+    except requests.exceptions.JSONDecodeError:
+        print("Error decoding JSON response")
+        return 'Transcription failed'
 
 def text_to_speech(text, output_file):
     """
