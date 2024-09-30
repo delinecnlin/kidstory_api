@@ -15,9 +15,7 @@ def transcribe_audio(file_path):
     headers = {
         'api-key': api_key
     }
-    files = {
-        'file': open(file_path, 'rb')
-    }
+    files = {'file': ('audio.wav', open(file_path, 'rb'), 'audio/wav')}
 
     print(f"Transcription URL: {url}")  # 添加调试信息
   
