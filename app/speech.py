@@ -1,20 +1,27 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
-import openai
-
-# Initialize the OpenAI client
-openai.api_key = os.getenv('AZURE_WHISPER_API_KEY')
+import os
+import requests
 
 def transcribe_audio(file_path):
     """
     Transcribe audio using Azure OpenAI Whisper model.
     """
-    with open(file_path, 'rb') as audio_file:
-        response = openai.Audio.transcribe(
-            model="whisper-1",
-            file=audio_file
-        )
-    return response['text']
+    endpoint = os.getenv('AZURE_WHISPER_ENDPOINT')
+    deployment_id = os.getenv('AZURE_WHISPER_DEPLOYMENT_ID')
+    api_key = os.getenv('AZURE_WHISPER_API_KEY')
+
+    url = f"{endpoint}/openai/deployments/{deployment_id}/audio/transcriptions?api-version=2024-06-01"
+    headers = {
+        'api-key': api_key
+    }
+    files = {
+        'file': open(file_path, 'rb')
+    }
+
+    response = requests.post(url, headers=headers, files=files)
+    response.raise_for_status()
+    return response.json()['text']
 
 def text_to_speech(text, output_file):
     """
