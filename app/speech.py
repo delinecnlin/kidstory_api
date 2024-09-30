@@ -17,15 +17,17 @@ def transcribe_audio(file_path):
     url = f"{endpoint}/openai/deployments/{deployment_id}/audio/transcriptions?api-version=2024-06-01"
     print(f"Transcription URL: {url}")  # 添加调试信息
     headers = {
-        'api-key': api_key,
-        'Content-Type': 'audio/wave'
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'multipart/form-data'
     }
-    files = [
-        ('file',('audio.wav',open(file_path, 'rb'),'audio/wav'))
-    ]
-    payload = {}
-    
-    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+    files = {
+        'file': ('audio.wav', open(file_path, 'rb'), 'audio/wav'),
+        'model': (None, 'whisper-1')
+    }
+
+    response = requests.post(url, headers=headers, files=files)
+    print(f"Response status code: {response.status_code}")
+    print(f"Response text: {response.text}")
     try:
         response_data = response.json()
         return response_data.get('text', 'Transcription failed')
