@@ -3,7 +3,7 @@ import azure.cognitiveservices.speech as speechsdk
 import openai
 
 # Initialize the OpenAI client
-openai.api_key = os.getenv('AZURE_OPENAI_API_KEY')
+openai.api_key = os.getenv('AZURE_WHISPER_API_KEY')
 
 def transcribe_audio(file_path):
     """

@@ -6,3 +6,4 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT') or 'your_password_salt'
     SECURITY_PASSWORD_HASH = 'argon2'
+    AZURE_WHISPER_API_KEY = os.environ.get('AZURE_WHISPER_API_KEY')
