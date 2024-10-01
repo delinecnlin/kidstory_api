@@ -259,8 +259,20 @@ def upload_image():
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
     if file:
-        files = {'file': (file.filename, file.stream, file.mimetype)}
-        response = requests.post('http://flaz2.southeastasia.azurecontainer.io:3000/api/v1/uploadimage', files=files)
+        import base64
+        image_data = base64.b64encode(file.read()).decode('utf-8')
+        payload = {
+            "question": "Can you describe the image?",
+            "uploads": [
+                {
+                    "data": f"data:{file.mimetype};base64,{image_data}",
+                    "type": "file",
+                    "name": file.filename,
+                    "mime": file.mimetype
+                }
+            ]
+        }
+        response = requests.post('http://flaz2.southeastasia.azurecontainer.io:3000/api/v1/prediction/<chatflowid>', json=payload)
         if response.status_code == 200:
             return jsonify(response.json())
         else:
