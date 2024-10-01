@@ -198,7 +198,8 @@ def add_chapter(story_id):
     story = Story.query.get_or_404(story_id)
     context = " ".join([chapter.body for chapter in story.chapters])
     preferences['context'] = context
-    new_content = generate_chapter_content(preferences)
+    image_file = request.files.get('image')
+    new_content = generate_chapter_content(preferences, image_file)
     if 'body' in new_content:
         new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
         db.session.add(new_chapter)
@@ -216,7 +217,8 @@ def create_story():
     if 'user' not in session or 'id' not in session['user']:
         return jsonify({'error': 'User not logged in or user ID not found in session'}), 401
 
-    new_content = generate_chapter_content(preferences)
+    image_file = request.files.get('image')
+    new_content = generate_chapter_content(preferences, image_file)
     if 'body' in new_content:
         title_content = generate_story_title(preferences)
         if 'title' in title_content:
@@ -251,33 +253,6 @@ def delete_story(id):
     return '', 204
 
 
-@routes_bp.route('/upload_image', methods=['POST'])
-def upload_image():
-    if 'image' not in request.files:
-        return jsonify({"error": "No image part in the request"}), 400
-    file = request.files['image']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-    if file:
-        import base64
-        image_data = base64.b64encode(file.read()).decode('utf-8')
-        payload = {
-            "question": "Can you describe the image?",
-            "uploads": [
-                {
-                    "data": f"data:{file.mimetype};base64,{image_data}",
-                    "type": "file",
-                    "name": file.filename,
-                    "mime": file.mimetype
-                }
-            ]
-        }
-        response = requests.post('http://flaz2.southeastasia.azurecontainer.io:3000/api/v1/prediction/905ad837-d784-4464-bdf0-b316ae81932f', json=payload)
-        if response.status_code == 200:
-            return jsonify(response.json())
-        else:
-            return jsonify({"error": "Failed to upload image"}), response.status_code
-    return redirect(url_for('routes.index'))
 
 
 @routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])
