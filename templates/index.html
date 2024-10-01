@@ -219,7 +219,7 @@
                 const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                 const audioUrl = URL.createObjectURL(audioBlob);
                 const audio = new Audio(audioUrl);
-                audio.play();  // 播放录制的音频以确认格式
+                // 直接处理音频数据
                 const formData = new FormData();
                 formData.append('audio', audioBlob, 'audio.wav');
 
