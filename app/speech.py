@@ -17,8 +17,7 @@ def transcribe_audio(file_path):
     url = f"{endpoint}/openai/deployments/{deployment_id}/audio/transcriptions?api-version=2024-06-01"
     print(f"Transcription URL: {url}")  # 添加调试信息
     headers = {
-        'Authorization': f'Bearer {api_key}',
-        'Content-Type': 'multipart/form-data'
+        'api-key':  api_key
     }
     files = {
         'file': ('audio.wav', open(file_path, 'rb'), 'audio/wav'),
