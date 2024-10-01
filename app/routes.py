@@ -19,6 +19,7 @@ from app import oauth
 from app.story_service import rewrite_story_service
 from app.image_service import generate_image
 import openai
+import requests
 
 # Google OAuth 回调处理
 @routes_bp.route('/auth/google')
@@ -250,14 +251,21 @@ def delete_story(id):
     return '', 204
 
 
-@routes_bp.route('/api/stories/<int:id>/rewrite', methods=['POST'])
-def rewrite_story_route(id):
-    data = request.get_json()
-    story = Story.query.get_or_404(id)
-    new_content = rewrite_story_service(id, data['preferences'])
-    story.body = new_content['body']
-    db.session.commit()
-    return jsonify({'id': story.id, 'title': story.title, 'body': story.body}), 200
+@routes_bp.route('/upload_image', methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image part in the request"}), 400
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    if file:
+        files = {'file': (file.filename, file.stream, file.mimetype)}
+        response = requests.post('http://flaz2.southeastasia.azurecontainer.io:3000/api/v1/uploadimage', files=files)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to upload image"}), response.status_code
+    return redirect(url_for('routes.index'))
 
 
 @routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['GET'])

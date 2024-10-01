@@ -26,6 +26,11 @@
         <textarea id="user_added_content" name="user_added_content"></textarea><br><br>
         <button type="button" onclick="createOrAddChapter()">Add Chapter</button>
     </form>
+    <form method="post" action="/upload_image" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <button type="submit">Upload Image</button>
+    </form>
+
     <h2 style="background-color: yellow;">GET /api/user_stories</h2>
     <ul>
         {% for item in chapters_with_story_info %}
