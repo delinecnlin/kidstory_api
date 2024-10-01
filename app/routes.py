@@ -272,7 +272,7 @@ def upload_image():
                 }
             ]
         }
-        response = requests.post('http://flaz2.southeastasia.azurecontainer.io:3000/api/v1/prediction/<chatflowid>', json=payload)
+        response = requests.post('http://flaz2.southeastasia.azurecontainer.io:3000/api/v1/prediction/905ad837-d784-4464-bdf0-b316ae81932f', json=payload)
         if response.status_code == 200:
             return jsonify(response.json())
         else:
