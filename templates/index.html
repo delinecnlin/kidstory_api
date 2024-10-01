@@ -206,9 +206,11 @@
         let mediaRecorder;
         let audioChunks = [];
 
+        let mediaStream;
+
         async function startRecording() {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
+            mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(mediaStream);
             mediaRecorder.start();
 
             mediaRecorder.ondataavailable = event => {
@@ -235,6 +237,7 @@
 
         function stopRecording() {
             mediaRecorder.stop();
+            mediaStream.getTracks().forEach(track => track.stop());
         }
     </script>
 
