@@ -2,7 +2,7 @@ import os
 import azure.cognitiveservices.speech as speechsdk
 import requests
 
-def transcribe_audio(file_path):
+def transcribe_audio(audio_data):
     """
     Transcribe audio using Azure OpenAI Whisper model.
     """
@@ -20,7 +20,7 @@ def transcribe_audio(file_path):
         'api-key':  api_key
     }
     files = {
-        'file': ('audio.wav', open(file_path, 'rb'), 'audio/wav'),
+        'file': ('audio.wav', audio_data, 'audio/wav'),
         'model': (None, 'whisper-1')
     }
 

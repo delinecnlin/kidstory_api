@@ -278,10 +278,8 @@ def transcribe():
         return jsonify({'error': 'No audio file provided'}), 400
 
     audio_file = request.files['audio']
-    with tempfile.NamedTemporaryFile(delete=False) as temp_audio:
-        audio_file.save(temp_audio.name)
-        transcription = transcribe_audio(temp_audio.name)
-    os.remove(temp_audio.name)
+    audio_data = audio_file.read()
+    transcription = transcribe_audio(audio_data)
 
     return jsonify({'transcription': transcription})
 
