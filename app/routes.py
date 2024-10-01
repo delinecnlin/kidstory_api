@@ -192,13 +192,17 @@ def index():
 
 @routes_bp.route('/api/stories/<int:story_id>/chapters', methods=['POST'])
 def add_chapter(story_id):
-    data = request.get_json()
-    preferences = data.get('preferences', {})
+    data = request.form
+    preferences = {
+        'main_characters': data.get('main_characters'),
+        'supporting_characters': data.get('supporting_characters'),
+        'user_added_content': data.get('user_added_content')
+    }
 
     story = Story.query.get_or_404(story_id)
     context = " ".join([chapter.body for chapter in story.chapters])
     preferences['context'] = context
-    image_file = request.files.get('image')
+    image_file = request.files['image'] if 'image' in request.files else None
     new_content = generate_chapter_content(preferences, image_file)
     if 'body' in new_content:
         new_chapter = Chapter(title="New Chapter", body=new_content['body'], story=story)
@@ -210,14 +214,18 @@ def add_chapter(story_id):
 
 @routes_bp.route('/api/stories/new', methods=['POST'])
 def create_story():
-    data = request.get_json()
-    preferences = data.get('preferences', {})
+    data = request.form
+    preferences = {
+        'main_characters': data.get('main_characters'),
+        'supporting_characters': data.get('supporting_characters'),
+        'user_added_content': data.get('user_added_content')
+    }
 
     current_app.logger.debug(f"Session data: {session}")
     if 'user' not in session or 'id' not in session['user']:
         return jsonify({'error': 'User not logged in or user ID not found in session'}), 401
 
-    image_file = request.files.get('image')
+    image_file = request.files['image'] if 'image' in request.files else None
     new_content = generate_chapter_content(preferences, image_file)
     if 'body' in new_content:
         title_content = generate_story_title(preferences)
