@@ -274,7 +274,8 @@ def tts_chapter(id, chapter_id):
     voice = request.form.get('voice', 'zh-CN-XiaoxiaoNeural')
     output_file = f"chapter_{chapter_id}.wav"
     text_to_speech(chapter.body, output_file, voice)
-    return jsonify({'message': 'TTS generated successfully', 'file': output_file}), 200
+    audio_url = url_for('static', filename=output_file)
+    return jsonify({'message': 'TTS generated successfully', 'file': audio_url}), 200
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     db.session.delete(chapter)
     db.session.commit()
