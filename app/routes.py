@@ -272,17 +272,13 @@ def get_chapter(id, chapter_id):
 def tts_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     voice = request.form.get('voice', 'zh-CN-XiaoxiaoNeural')
-    output_file = f"chapter_{chapter_id}.mp3"
+    output_file = f"chapter_{chapter_id}.wav"
     text_to_speech(chapter.body, output_file, voice)
-    audio_url = url_for('static', filename=f"chapter_{chapter_id}.mp3")
+    audio_url = url_for('static', filename=f"chapter_{chapter_id}.wav")
     chapter.audio_url = audio_url
     db.session.commit()
     current_app.logger.debug(f"Audio URL: {audio_url}")
     return jsonify({'message': 'TTS generated successfully', 'file': audio_url}), 200
-    chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
-    db.session.delete(chapter)
-    db.session.commit()
-    return jsonify({'message': 'Chapter deleted successfully'}), 200
 
 @routes_bp.route('/api/transcribe', methods=['POST'])
 def transcribe():
