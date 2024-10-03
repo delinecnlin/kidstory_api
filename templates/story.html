@@ -17,6 +17,12 @@
             <li>
                 {{ chapter.body }}
                 <button onclick="deleteChapter({{ story.id }}, {{ chapter.id }})">Delete Chapter</button>
+                <button onclick="ttsChapter({{ story.id }}, {{ chapter.id }})">朗读章节</button>
+                <select id="voice-select-{{ chapter.id }}">
+                    <option value="zh-CN-XiaoxiaoNeural">Xiaoxiao</option>
+                    <option value="zh-CN-YunxiNeural">Yunxi</option>
+                    <option value="zh-CN-YunyangNeural">Yunyang</option>
+                </select>
             </li>
         {% endfor %}
     </ul>
@@ -31,6 +37,24 @@
             location.reload();
         } else {
             alert('Failed to delete chapter');
+        }
+    }
+    async function ttsChapter(storyId, chapterId) {
+        const voiceSelect = document.getElementById(`voice-select-${chapterId}`);
+        const voice = voiceSelect.value;
+        const response = await fetch(`/api/stories/${storyId}/chapters/${chapterId}/tts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `voice=${voice}`
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert('TTS generated successfully: ' + data.file);
+        } else {
+            alert('Failed to generate TTS');
         }
     }
 </script>

@@ -5,7 +5,7 @@ import logging
 
 import requests
 from app.models import User, Story, Chapter
-from app.speech import transcribe_audio
+from app.speech import transcribe_audio, text_to_speech
 import os
 import tempfile
 from app.story_service import generate_chapter_content, generate_story_title
@@ -268,8 +268,13 @@ def get_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     return jsonify({'id': chapter.id, 'title': chapter.title, 'body': chapter.body}), 200
 
-@routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>', methods=['DELETE'])
-def delete_chapter(id, chapter_id):
+@routes_bp.route('/api/stories/<int:id>/chapters/<int:chapter_id>/tts', methods=['POST'])
+def tts_chapter(id, chapter_id):
+    chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
+    voice = request.form.get('voice', 'zh-CN-XiaoxiaoNeural')
+    output_file = f"chapter_{chapter_id}.wav"
+    text_to_speech(chapter.body, output_file, voice)
+    return jsonify({'message': 'TTS generated successfully', 'file': output_file}), 200
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     db.session.delete(chapter)
     db.session.commit()

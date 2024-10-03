@@ -34,7 +34,7 @@ def transcribe_audio(audio_data):
         print("Error decoding JSON response")
         return 'Transcription failed'
 
-def text_to_speech(text, output_file):
+def text_to_speech(text, output_file, voice='zh-CN-XiaoxiaoNeural'):
     """
     Convert text to speech using Azure Cognitive Services.
     """
@@ -44,6 +44,7 @@ def text_to_speech(text, output_file):
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
 
+    speech_config.speech_synthesis_voice_name = voice
     synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
     result = synthesizer.speak_text_async(text).get()
 
