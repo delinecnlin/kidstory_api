@@ -272,9 +272,9 @@ def get_chapter(id, chapter_id):
 def tts_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     voice = request.form.get('voice', 'zh-CN-XiaoxiaoNeural')
-    output_file = f"chapter_{chapter_id}.wav"
+    output_file = f"chapter_{chapter_id}.mp3"
     text_to_speech(chapter.body, output_file, voice)
-    audio_url = url_for('static', filename=f"chapter_{chapter_id}.wav")
+    audio_url = url_for('static', filename=f"chapter_{chapter_id}.mp3")
     chapter.audio_url = audio_url
     db.session.commit()
     current_app.logger.debug(f"Audio URL: {audio_url}")
