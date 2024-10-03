@@ -45,6 +45,9 @@ def text_to_speech(text, output_file, voice='zh-CN-XiaoxiaoNeural'):
     static_dir = os.path.join(os.path.dirname(__file__), '..', 'static')
     if not os.path.exists(static_dir):
         os.makedirs(static_dir)
+    current_app.logger.debug(f"Static directory: {static_dir}")
+    if not os.path.exists(static_dir):
+        os.makedirs(static_dir)
     output_path = os.path.join(static_dir, output_file)
     print(f"Saving audio to: {output_path}")  # Add logging for the output path
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
