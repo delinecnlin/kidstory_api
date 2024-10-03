@@ -42,10 +42,11 @@ def text_to_speech(text, output_file, voice='zh-CN-XiaoxiaoNeural'):
     service_region = os.getenv('AZURE_SERVICE_REGION')
 
     speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
-    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    static_dir = os.path.join(os.path.dirname(__file__), '..', 'static')
     if not os.path.exists(static_dir):
         os.makedirs(static_dir)
     output_path = os.path.join(static_dir, output_file)
+    print(f"Saving audio to: {output_path}")  # Add logging for the output path
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
 
     speech_config.speech_synthesis_voice_name = voice

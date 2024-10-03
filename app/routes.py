@@ -272,7 +272,7 @@ def get_chapter(id, chapter_id):
 def tts_chapter(id, chapter_id):
     chapter = Chapter.query.filter_by(story_id=id, id=chapter_id).first_or_404()
     voice = request.form.get('voice', 'zh-CN-XiaoxiaoNeural')
-    output_file = f"static/chapter_{chapter_id}.wav"
+    output_file = f"chapter_{chapter_id}.wav"
     text_to_speech(chapter.body, output_file, voice)
     audio_url = url_for('static', filename=output_file)
     return jsonify({'message': 'TTS generated successfully', 'file': audio_url}), 200
