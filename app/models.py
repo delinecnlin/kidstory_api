@@ -43,3 +43,4 @@ class Chapter(db.Model):
     title = db.Column(db.String(255), nullable=False)
     body = db.Column(db.Text, nullable=False)
     story_id = db.Column(db.Integer, db.ForeignKey('story.id'), nullable=False)
+    audio_url = db.Column(db.String(255), nullable=True)
