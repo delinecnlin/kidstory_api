@@ -276,6 +276,8 @@ def tts_chapter(id, chapter_id):
     text_to_speech(chapter.body, output_file, voice)
     audio_url = url_for('static', filename=output_file)
     current_app.logger.debug(f"Generated audio URL: {audio_url}")
+    current_app.logger.debug(f"Static folder: {current_app.static_folder}")
+    current_app.logger.debug(f"Static URL path: {current_app.static_url_path}")
     chapter.audio_url = audio_url
     db.session.commit()
     current_app.logger.debug(f"Audio URL: {audio_url}")
