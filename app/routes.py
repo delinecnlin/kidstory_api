@@ -274,7 +274,8 @@ def tts_chapter(id, chapter_id):
     voice = request.form.get('voice', 'zh-CN-XiaoxiaoNeural')
     output_file = f"chapter_{chapter_id}.mp3"
     text_to_speech(chapter.body, output_file, voice)
-    audio_url = url_for('static', filename=f"chapter_{chapter_id}.mp3")
+    audio_url = url_for('static', filename=output_file)
+    current_app.logger.debug(f"Generated audio URL: {audio_url}")
     chapter.audio_url = audio_url
     db.session.commit()
     current_app.logger.debug(f"Audio URL: {audio_url}")
