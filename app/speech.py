@@ -50,6 +50,8 @@ def text_to_speech(text, output_file, voice='zh-CN-XiaoxiaoNeural'):
         os.makedirs(static_dir)
     output_path = os.path.join(static_dir, output_file)
     print(f"Saving audio to: {output_path}")  # Add logging for the output path
+    with open(output_path, 'wb') as f:
+        f.write(b'')  # Ensure the file is created
     # 设置输出格式为 MP3
     audio_format = speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
