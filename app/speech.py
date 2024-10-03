@@ -52,7 +52,8 @@ def text_to_speech(text, output_file, voice='zh-CN-XiaoxiaoNeural'):
     print(f"Saving audio to: {output_path}")  # Add logging for the output path
     # 设置输出格式为 MP3
     audio_format = speechsdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3
-    audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path, format=audio_format)
+    audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
+    speech_config.set_speech_synthesis_output_format(audio_format)
 
     speech_config.speech_synthesis_voice_name = voice
     synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
