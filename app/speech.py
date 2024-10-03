@@ -1,6 +1,7 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
 import requests
+from pydub import AudioSegment
 
 def transcribe_audio(audio_data):
     """
@@ -50,6 +51,11 @@ def text_to_speech(text, output_file, voice='zh-CN-XiaoxiaoNeural'):
         os.makedirs(static_dir)
     output_path = os.path.join(static_dir, output_file)
     print(f"Saving audio to: {output_path}")  # Add logging for the output path
+    # Convert WAV to MP3
+    audio_segment = AudioSegment.from_wav(output_path)
+    mp3_output_path = output_path.replace('.wav', '.mp3')
+    audio_segment.export(mp3_output_path, format="mp3")
+    print(f"Converted audio to MP3: {mp3_output_path}")
     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_path)
 
     speech_config.speech_synthesis_voice_name = voice
