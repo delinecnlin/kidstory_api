@@ -20,8 +20,49 @@ from app.story_service import rewrite_story_service
 from app.image_service import generate_image
 import openai
 import requests
+from wechatpy import WeChatClient
+from wechatpy.oauth import WeChatOAuth
 
 # Google OAuth 回调处理
+
+# WeChat OAuth 回调处理
+@routes_bp.route('/auth/wechat')
+def auth_wechat():
+    redirect_uri = url_for('routes.auth_wechat_callback', _external=True)
+    oauth = WeChatOAuth(current_app.config['WECHAT_APP_ID'], current_app.config['WECHAT_APP_SECRET'], redirect_uri)
+    auth_url = oauth.authorize_url
+    return redirect(auth_url)
+
+@routes_bp.route('/auth/wechat/callback')
+def auth_wechat_callback():
+    code = request.args.get('code')
+    oauth = WeChatOAuth(current_app.config['WECHAT_APP_ID'], current_app.config['WECHAT_APP_SECRET'], '')
+    oauth.fetch_access_token(code)
+    user_info = oauth.get_user_info()
+
+    # 根据从微信返回的用户信息处理登录或注册
+    if not user_info:
+        return jsonify({"error": "Failed to authenticate with WeChat"}), 400
+
+    user_datastore = current_app.extensions['security'].datastore
+    user = user_datastore.find_user(email=user_info['email'])
+    current_app.logger.debug(f"User found: {user}")
+
+    # 如果用户不存在，注册新用户
+    if not user:
+        user = user_datastore.create_user(
+            email=user_info['email'],
+            username=user_info.get('nickname', user_info['email']),
+            password=hash_password('default_password')  # 设置默认密码
+        )
+        db.session.commit()
+
+    # 登录用户
+    current_app.logger.debug(f"User ID: {user.id}")
+    session['user'] = {'id': user.id, 'email': user.email, 'username': user.username, 'type': 'wechat'}
+    current_app.logger.debug(f"User session set: {session['user']}")
+
+    return redirect(url_for('routes.index'))
 @routes_bp.route('/auth/google')
 def auth_google():
     redirect_uri = url_for('routes.auth_callback', _external=True)
