@@ -12,6 +12,8 @@
     {% endif %}
     <form method="POST" action="{{ url_for('routes.auth') }}">
         <h2>Local User Login</h2>
+        <br>
+        <a href="{{ url_for('routes.auth_wechat') }}">Login/Register with WeChat</a>
         <h2>Local User Registration</h2>
         <input type="hidden" name="action" value="register">
         <label for="username">Username:</label>
